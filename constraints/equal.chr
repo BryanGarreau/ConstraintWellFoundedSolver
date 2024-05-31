@@ -1,0 +1,4 @@
+#equal/2
+
+equal(X,Y) \ dom(X,DX), dom(Y,DY) <=> intersection(DX,DY,ND) | dom(X,ND), dom(Y,ND).
+equal(X,Y), dom(X,[DX]), dom(Y,[DY]) <=> DX =\= DY | fail.

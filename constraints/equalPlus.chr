@@ -1,0 +1,9 @@
+#equal/3
+
+fact(equal(X,Y,Z)) <=> equal(X,Y,Z).
+equal(X,N,Y), dom(Y,DY) \ dom(X,DX) <=> member(V,DX), A is V+N, not(member(A,DY)), delete(DX,V,ND) | dom(X,ND).
+equal(X,N,Y), dom(X,DX) \ dom(Y,DY) <=> member(V,DY), A is V-N, not(member(A,DX)), delete(DY,V,ND) | dom(Y,ND).
+equal(X,N,Y), dom(X,[DX]), dom(Y,[DY]) <=> A is DX + N, A =\= DY | fail.
+
+dom(A,[DA]), dom(C,[DC]), bodyC(X,equal(A,B,C)) ==> Z is DA+B, Z == DC | verified_constraint(X,equal(A,B,C)).
+

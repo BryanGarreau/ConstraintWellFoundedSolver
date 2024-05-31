@@ -1,0 +1,4 @@
+dom(x,[1])
+dom(y,[4])
+fact(b)
+fact(leq3(x,3,y))

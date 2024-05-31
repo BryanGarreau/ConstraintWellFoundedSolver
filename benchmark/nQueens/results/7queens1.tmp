@@ -1,0 +1,1 @@
+fact(q(7,6));fact(q(6,4));fact(q(5,2));fact(q(4,7));fact(q(3,5));fact(q(2,3));fact(q(1,1))

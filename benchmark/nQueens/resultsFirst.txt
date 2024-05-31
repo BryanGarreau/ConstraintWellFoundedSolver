@@ -1,0 +1,5 @@
+program name:compilation time (ASP):solving time (ASP):compilation time (CASP):solving time (CASP):compilation time (clingo):solving time (clingo)
+0,02:4queens:0,32:0,30::0,00
+0,03:5queens:0,36:0,31::0,00
+0,02:6queens:1,83:0,76::0,00
+0,03:7queens:2,17:2,50::0,00

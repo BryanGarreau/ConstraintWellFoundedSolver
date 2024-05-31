@@ -1,0 +1,6 @@
+#leq3/3
+leqfiltering1 @ dom(X,DX), fact(leq3(X,Z,Y)) \ dom(Y,DY) <=> min_member(MX,DX), min_member(MY,DY), MY < MX + Z | delete(DY,MY,DYY), dom(Y,DYY).
+leqfiltering2 @ dom(Y,DY), fact(leq3(X,Z,Y)) \ dom(X,DX) <=> max_member(MX,DX), max_member(MY,DY), MY < MX + Z | delete(DX,MX,DXX), dom(X,DXX).
+leqTest @ dom(Y,[DY]), dom(X,[DX]), fact(leq3(X,Z,Y)) <=> DX + Z > DY | fail.
+
+dom(L,DL), dom(N,DN), bodyC(X,leq3(L,M,N)) ==>  DL + M =< DN | verified_constraint(X,leq3(L,M,N)).

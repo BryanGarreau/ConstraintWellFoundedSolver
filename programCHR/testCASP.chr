@@ -1,0 +1,90 @@
+:- use_module(library(chr)).
+:- chr_constraint fact/1, rule/4, nrule/1, nhead/1, head/2, bodyP/2, bodyN/2, bodyC/2, launcher/0, end/0, choice/1, cleaner/0.
+:- chr_constraint choi_nrule/3, choi_frule/1.
+
+:- chr_constraint leq/2, dom/2.
+:- chr_constraint leq3/3, leq3_prop/3, heads/2.
+
+dom(_,[]) <=> fail.
+%dom(X,[Y]) <=> X = Y, dom(X,Y).
+%dom(X,L) <=> nonvar(X) | memberchk(X,L).
+dom(X,L1), dom(X,L2) <=> intersection(L1,L2,L3), dom(X,L3).
+
+leqfiltering1 @ dom(X,DX), leq3(X,Z,Y) \ dom(Y,DY) <=> min_member(MX,DX), min_member(MY,DY), MY < MX + Z | delete(DY,MY,DYY), dom(Y,DYY).
+leqfiltering2 @ dom(Y,DY), leq3(X,Z,Y) \ dom(X,DX) <=> max_member(MX,DX), max_member(MY,DY), MY < MX + Z | delete(DX,MX,DXX), dom(X,DXX).
+leqTest @ dom(Y,[DY]), dom(X,[DX]), leq3(X,Z,Y) <=> DX + Z > DY | fail.
+/*
+reflexivity  @ leq(X,X) <=> true.
+antisymmetry @ leq(X,Y), leq(Y,X) <=> X = Y.
+idempotence  @ leq(X,Y) \ leq(X,Y) <=> true.
+transitivity @ leq(X,Y), leq(Y,Z) ==> leq(X,Z).*/
+
+%Rule structure : number, positive, negative, constraint;
+
+%%Program
+
+% r1 @ a :- X + 3 <= Y, not b.
+% r2 @ b :- Y + 4 <= X, not a.
+
+
+%% Head of the rules 
+
+%nrule(1) \ head(1,X) <=> nhead(X).
+%nrule(2) \ head(2,X) <=> nhead(X).
+nrule(X) \ head(X,Y), heads(Y,C) <=> heads(Y,A), A is C-1.
+heads(X,0) <=> nhead(X).
+
+%% Transformation 
+
+red_neg @ fact(X) \ bodyN(Y,X), rule(Y,_,_,_) <=> nrule(Y).
+red_fai @ nhead(X) \ bodyP(Y,X), rule(Y,_,_,_) <=> nrule(Y).
+red_pos @ nhead(X) \ bodyN(Y,X), rule(Y,P,N,C) <=> rule(Y,P,A,C), A is N-1.
+red_suc @ fact(X) \ bodyP(Y,X), rule(Y,P,N,C) <=> rule(Y,A,N,C), A is P-1.
+
+%% Empty body 
+
+head(X,Y), rule(X,0,0,0) <=> fact(Y).
+
+%% Choice
+
+%% The rule is forced to be true.
+%% The negative body cannot be true
+choi_frule(X), bodyN(X,Y), fact(Y) <=> fail.
+choi_frule(X) \ bodyC(X,leq3(A,B,C)) <=> leq3(A,B,C).
+
+%% The rule is forced to be false
+%% If one atom from the negative body is true, then fail.
+nhead(Y) \ choi_nrule(X,Z,C), bodyN(X,Y) <=> choi_nrule(X,A,C), A is Z-1.
+dom(L,DL), dom(N,DN) \ choi_nrule(X,Z,C), bodyC(X,leq3(L,M,N)) <=> DL + M =< DN | choi_nrule(X,Z,A), A is C-1.
+choi_nrule(_,0,0) <=> fail.
+
+rule(X,0,Z,C), choice(X) <=> (choi_frule(X), rule(X,0,0,0) ; choi_nrule(X,Z,C), nrule(X)).
+enumeration @ dom(X,[V|Rest]) <=> length(Rest,Length), Length =\= 0 | dom(X,[V]) ; dom(X,Rest).
+
+%% Launcher 
+
+%launcher <=> heads(b,1), heads(a,1), dom(x,[1,2,3,4,5]), dom(y,[1,2,3,4,5]), rule(1,0,1,1), head(1,a), bodyN(1,b), bodyC(1,leq3(x,3,y)), rule(2,0,1,1), head(2,b), bodyN(2,a), bodyC(2,leq3(y,4,x)), choice(1), choice(2), cleaner, end.
+launcher <=> heads(b,1), heads(a,1), dom(x,[1,2,3,4,5]), dom(y,[1,2,3,4,5]), rule(1,0,1,1), head(1,a), bodyN(1,b), bodyC(1,leq3(x,3,y)), rule(2,0,1,1), head(2,b), bodyN(2,a), bodyC(2,leq3(y,4,x)), choice(1), choice(2), cleaner, end.
+
+dom(_,DX) <=> length(DX,L), L > 1 | fail.
+
+%% Cleaner 
+fact(X) \ fact(X) <=> true.
+cleaner \ bodyP(_,_) <=> true.
+cleaner \ bodyN(_,_) <=> true.
+cleaner \ head(_,_) <=> true.
+cleaner \ bodyC(_,_) <=> true.
+
+cleaner \ choice(_) <=> true.
+cleaner \ choi_frule(_) <=> true.
+cleaner \ choi_nrule(_,_,_) <=> true.
+cleaner \ nhead(_) <=> true.
+cleaner \ nrule(_) <=> true.
+cleaner \ rule(_,_,_,_) <=> true.
+cleaner <=> true.
+
+
+end, dom(X,DX) ==> write("Domaine de "), write(X), write(" : "), write(DX), write("\n").
+end <=> chr_show_store(user), write('#'), nl, fail.
+
+

@@ -1,0 +1,16 @@
+#alldiff/1
+
+:- chr_constraint verif_alldiff/2.
+
+bodyC(_,alldiff(X)) ==> verif_alldiff(X,X).
+fact(alldiff(X)) <=> alldiff(X).
+alldiff([]) <=> fail.
+alldiff(L) \ alldiff(L) <=> true.
+
+alldiff(L), dom(X,[DX]), dom(Y,[DX]) <=> member(X,L), member(Y,L), X \= Y | fail. %If they have the same domain, then fail.
+alldiff(L), dom(X,[DX]) \ dom(Y,DY) <=> member(X,L), member(Y,L), member(DX,DY), X \= Y | delete(DY,DX,DYY), dom(Y,DYY).
+
+
+dom(X,DX) \ verif_alldiff(L1,L2) <=> member(X,L2), length(DX,L), L=:=1, delete(L2,X,L3) | verif_alldiff(L1,L3).
+
+verif_alldiff(Y,[]), bodyC(X,alldiff(Y)) ==> verified_constraint(X,alldiff(Y)).

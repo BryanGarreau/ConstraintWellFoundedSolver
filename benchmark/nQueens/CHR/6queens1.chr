@@ -1,0 +1,351 @@
+:- use_module(library(chr)).
+:- chr_constraint fact/1, rule/4, nrule/1, nhead/1, head/2, heads/2, bodyP/2, bodyN/2, bodyC/2, launcher/0, end/0, cleaner/0, choice/1, choi_nrule/3, choi_frule/1, verified_constraint/2, bot/0.
+
+%%Program
+
+%% @r1  q(1,1) :- not q(1,2), not q(1,3), not q(1,4), not q(1,5), not q(1,6)#5
+%% @r2  q(1,2) :- not q(1,1), not q(1,3), not q(1,4), not q(1,5), not q(1,6)#5
+%% @r3  q(1,3) :- not q(1,1), not q(1,2), not q(1,4), not q(1,5), not q(1,6)#5
+%% @r4  q(1,4) :- not q(1,1), not q(1,2), not q(1,3), not q(1,5), not q(1,6)#5
+%% @r5  q(1,5) :- not q(1,1), not q(1,2), not q(1,3), not q(1,4), not q(1,6)#5
+%% @r6  q(1,6) :- not q(1,1), not q(1,2), not q(1,3), not q(1,4), not q(1,5)#5
+%% @r7  q(2,1) :- not q(2,2), not q(2,3), not q(2,4), not q(2,5), not q(2,6)#5
+%% @r8  q(2,2) :- not q(2,1), not q(2,3), not q(2,4), not q(2,5), not q(2,6)#5
+%% @r9  q(2,3) :- not q(2,1), not q(2,2), not q(2,4), not q(2,5), not q(2,6)#5
+%% @r10  q(2,4) :- not q(2,1), not q(2,2), not q(2,3), not q(2,5), not q(2,6)#5
+%% @r11  q(2,5) :- not q(2,1), not q(2,2), not q(2,3), not q(2,4), not q(2,6)#5
+%% @r12  q(2,6) :- not q(2,1), not q(2,2), not q(2,3), not q(2,4), not q(2,5)#5
+%% @r13  q(3,1) :- not q(3,2), not q(3,3), not q(3,4), not q(3,5), not q(3,6)#5
+%% @r14  q(3,2) :- not q(3,1), not q(3,3), not q(3,4), not q(3,5), not q(3,6)#5
+%% @r15  q(3,3) :- not q(3,1), not q(3,2), not q(3,4), not q(3,5), not q(3,6)#5
+%% @r16  q(3,4) :- not q(3,1), not q(3,2), not q(3,3), not q(3,5), not q(3,6)#5
+%% @r17  q(3,5) :- not q(3,1), not q(3,2), not q(3,3), not q(3,4), not q(3,6)#5
+%% @r18  q(3,6) :- not q(3,1), not q(3,2), not q(3,3), not q(3,4), not q(3,5)#5
+%% @r19  q(4,1) :- not q(4,2), not q(4,3), not q(4,4), not q(4,5), not q(4,6)#5
+%% @r20  q(4,2) :- not q(4,1), not q(4,3), not q(4,4), not q(4,5), not q(4,6)#5
+%% @r21  q(4,3) :- not q(4,1), not q(4,2), not q(4,4), not q(4,5), not q(4,6)#5
+%% @r22  q(4,4) :- not q(4,1), not q(4,2), not q(4,3), not q(4,5), not q(4,6)#5
+%% @r23  q(4,5) :- not q(4,1), not q(4,2), not q(4,3), not q(4,4), not q(4,6)#5
+%% @r24  q(4,6) :- not q(4,1), not q(4,2), not q(4,3), not q(4,4), not q(4,5)#5
+%% @r25  q(5,1) :- not q(5,2), not q(5,3), not q(5,4), not q(5,5), not q(5,6)#5
+%% @r26  q(5,2) :- not q(5,1), not q(5,3), not q(5,4), not q(5,5), not q(5,6)#5
+%% @r27  q(5,3) :- not q(5,1), not q(5,2), not q(5,4), not q(5,5), not q(5,6)#5
+%% @r28  q(5,4) :- not q(5,1), not q(5,2), not q(5,3), not q(5,5), not q(5,6)#5
+%% @r29  q(5,5) :- not q(5,1), not q(5,2), not q(5,3), not q(5,4), not q(5,6)#5
+%% @r30  q(5,6) :- not q(5,1), not q(5,2), not q(5,3), not q(5,4), not q(5,5)#5
+%% @r31  q(6,1) :- not q(6,2), not q(6,3), not q(6,4), not q(6,5), not q(6,6)#5
+%% @r32  q(6,2) :- not q(6,1), not q(6,3), not q(6,4), not q(6,5), not q(6,6)#5
+%% @r33  q(6,3) :- not q(6,1), not q(6,2), not q(6,4), not q(6,5), not q(6,6)#5
+%% @r34  q(6,4) :- not q(6,1), not q(6,2), not q(6,3), not q(6,5), not q(6,6)#5
+%% @r35  q(6,5) :- not q(6,1), not q(6,2), not q(6,3), not q(6,4), not q(6,6)#5
+%% @r36  q(6,6) :- not q(6,1), not q(6,2), not q(6,3), not q(6,4), not q(6,5)#5
+%% @r37  bot :- q(1,1), q(2,1)#2
+%% @r38  bot :- q(1,1), q(3,1)#2
+%% @r39  bot :- q(1,1), q(4,1)#2
+%% @r40  bot :- q(1,1), q(5,1)#2
+%% @r41  bot :- q(1,1), q(6,1)#2
+%% @r42  bot :- q(2,1), q(3,1)#2
+%% @r43  bot :- q(2,1), q(4,1)#2
+%% @r44  bot :- q(2,1), q(5,1)#2
+%% @r45  bot :- q(2,1), q(6,1)#2
+%% @r46  bot :- q(3,1), q(4,1)#2
+%% @r47  bot :- q(3,1), q(5,1)#2
+%% @r48  bot :- q(3,1), q(6,1)#2
+%% @r49  bot :- q(4,1), q(5,1)#2
+%% @r50  bot :- q(4,1), q(6,1)#2
+%% @r51  bot :- q(5,1), q(6,1)#2
+%% @r52  bot :- q(1,2), q(2,2)#2
+%% @r53  bot :- q(1,2), q(3,2)#2
+%% @r54  bot :- q(1,2), q(4,2)#2
+%% @r55  bot :- q(1,2), q(5,2)#2
+%% @r56  bot :- q(1,2), q(6,2)#2
+%% @r57  bot :- q(2,2), q(3,2)#2
+%% @r58  bot :- q(2,2), q(4,2)#2
+%% @r59  bot :- q(2,2), q(5,2)#2
+%% @r60  bot :- q(2,2), q(6,2)#2
+%% @r61  bot :- q(3,2), q(4,2)#2
+%% @r62  bot :- q(3,2), q(5,2)#2
+%% @r63  bot :- q(3,2), q(6,2)#2
+%% @r64  bot :- q(4,2), q(5,2)#2
+%% @r65  bot :- q(4,2), q(6,2)#2
+%% @r66  bot :- q(5,2), q(6,2)#2
+%% @r67  bot :- q(1,3), q(2,3)#2
+%% @r68  bot :- q(1,3), q(3,3)#2
+%% @r69  bot :- q(1,3), q(4,3)#2
+%% @r70  bot :- q(1,3), q(5,3)#2
+%% @r71  bot :- q(1,3), q(6,3)#2
+%% @r72  bot :- q(2,3), q(3,3)#2
+%% @r73  bot :- q(2,3), q(4,3)#2
+%% @r74  bot :- q(2,3), q(5,3)#2
+%% @r75  bot :- q(2,3), q(6,3)#2
+%% @r76  bot :- q(3,3), q(4,3)#2
+%% @r77  bot :- q(3,3), q(5,3)#2
+%% @r78  bot :- q(3,3), q(6,3)#2
+%% @r79  bot :- q(4,3), q(5,3)#2
+%% @r80  bot :- q(4,3), q(6,3)#2
+%% @r81  bot :- q(5,3), q(6,3)#2
+%% @r82  bot :- q(1,4), q(2,4)#2
+%% @r83  bot :- q(1,4), q(3,4)#2
+%% @r84  bot :- q(1,4), q(4,4)#2
+%% @r85  bot :- q(1,4), q(5,4)#2
+%% @r86  bot :- q(1,4), q(6,4)#2
+%% @r87  bot :- q(2,4), q(3,4)#2
+%% @r88  bot :- q(2,4), q(4,4)#2
+%% @r89  bot :- q(2,4), q(5,4)#2
+%% @r90  bot :- q(2,4), q(6,4)#2
+%% @r91  bot :- q(3,4), q(4,4)#2
+%% @r92  bot :- q(3,4), q(5,4)#2
+%% @r93  bot :- q(3,4), q(6,4)#2
+%% @r94  bot :- q(4,4), q(5,4)#2
+%% @r95  bot :- q(4,4), q(6,4)#2
+%% @r96  bot :- q(5,4), q(6,4)#2
+%% @r97  bot :- q(1,5), q(2,5)#2
+%% @r98  bot :- q(1,5), q(3,5)#2
+%% @r99  bot :- q(1,5), q(4,5)#2
+%% @r100  bot :- q(1,5), q(5,5)#2
+%% @r101  bot :- q(1,5), q(6,5)#2
+%% @r102  bot :- q(2,5), q(3,5)#2
+%% @r103  bot :- q(2,5), q(4,5)#2
+%% @r104  bot :- q(2,5), q(5,5)#2
+%% @r105  bot :- q(2,5), q(6,5)#2
+%% @r106  bot :- q(3,5), q(4,5)#2
+%% @r107  bot :- q(3,5), q(5,5)#2
+%% @r108  bot :- q(3,5), q(6,5)#2
+%% @r109  bot :- q(4,5), q(5,5)#2
+%% @r110  bot :- q(4,5), q(6,5)#2
+%% @r111  bot :- q(5,5), q(6,5)#2
+%% @r112  bot :- q(1,6), q(2,6)#2
+%% @r113  bot :- q(1,6), q(3,6)#2
+%% @r114  bot :- q(1,6), q(4,6)#2
+%% @r115  bot :- q(1,6), q(5,6)#2
+%% @r116  bot :- q(1,6), q(6,6)#2
+%% @r117  bot :- q(2,6), q(3,6)#2
+%% @r118  bot :- q(2,6), q(4,6)#2
+%% @r119  bot :- q(2,6), q(5,6)#2
+%% @r120  bot :- q(2,6), q(6,6)#2
+%% @r121  bot :- q(3,6), q(4,6)#2
+%% @r122  bot :- q(3,6), q(5,6)#2
+%% @r123  bot :- q(3,6), q(6,6)#2
+%% @r124  bot :- q(4,6), q(5,6)#2
+%% @r125  bot :- q(4,6), q(6,6)#2
+%% @r126  bot :- q(5,6), q(6,6)#2
+%% @r127  bot :- q(1,1), q(2,2)#2
+%% @r128  bot :- q(1,1), q(3,3)#2
+%% @r129  bot :- q(1,1), q(4,4)#2
+%% @r130  bot :- q(1,1), q(5,5)#2
+%% @r131  bot :- q(1,1), q(6,6)#2
+%% @r132  bot :- q(1,2), q(2,3)#2
+%% @r133  bot :- q(1,2), q(2,1)#2
+%% @r134  bot :- q(1,2), q(3,4)#2
+%% @r135  bot :- q(1,2), q(4,5)#2
+%% @r136  bot :- q(1,2), q(5,6)#2
+%% @r137  bot :- q(1,3), q(2,4)#2
+%% @r138  bot :- q(1,3), q(2,2)#2
+%% @r139  bot :- q(1,3), q(3,5)#2
+%% @r140  bot :- q(1,3), q(3,1)#2
+%% @r141  bot :- q(1,3), q(4,6)#2
+%% @r142  bot :- q(1,4), q(2,5)#2
+%% @r143  bot :- q(1,4), q(2,3)#2
+%% @r144  bot :- q(1,4), q(3,6)#2
+%% @r145  bot :- q(1,4), q(3,2)#2
+%% @r146  bot :- q(1,4), q(4,1)#2
+%% @r147  bot :- q(1,5), q(2,6)#2
+%% @r148  bot :- q(1,5), q(2,4)#2
+%% @r149  bot :- q(1,5), q(3,3)#2
+%% @r150  bot :- q(1,5), q(4,2)#2
+%% @r151  bot :- q(1,5), q(5,1)#2
+%% @r152  bot :- q(1,6), q(2,5)#2
+%% @r153  bot :- q(1,6), q(3,4)#2
+%% @r154  bot :- q(1,6), q(4,3)#2
+%% @r155  bot :- q(1,6), q(5,2)#2
+%% @r156  bot :- q(1,6), q(6,1)#2
+%% @r157  bot :- q(2,1), q(3,2)#2
+%% @r158  bot :- q(2,1), q(4,3)#2
+%% @r159  bot :- q(2,1), q(5,4)#2
+%% @r160  bot :- q(2,1), q(6,5)#2
+%% @r161  bot :- q(2,2), q(3,3)#2
+%% @r162  bot :- q(2,2), q(3,1)#2
+%% @r163  bot :- q(2,2), q(4,4)#2
+%% @r164  bot :- q(2,2), q(5,5)#2
+%% @r165  bot :- q(2,2), q(6,6)#2
+%% @r166  bot :- q(2,3), q(3,4)#2
+%% @r167  bot :- q(2,3), q(3,2)#2
+%% @r168  bot :- q(2,3), q(4,5)#2
+%% @r169  bot :- q(2,3), q(4,1)#2
+%% @r170  bot :- q(2,3), q(5,6)#2
+%% @r171  bot :- q(2,4), q(3,5)#2
+%% @r172  bot :- q(2,4), q(3,3)#2
+%% @r173  bot :- q(2,4), q(4,6)#2
+%% @r174  bot :- q(2,4), q(4,2)#2
+%% @r175  bot :- q(2,4), q(5,1)#2
+%% @r176  bot :- q(2,5), q(3,6)#2
+%% @r177  bot :- q(2,5), q(3,4)#2
+%% @r178  bot :- q(2,5), q(4,3)#2
+%% @r179  bot :- q(2,5), q(5,2)#2
+%% @r180  bot :- q(2,5), q(6,1)#2
+%% @r181  bot :- q(2,6), q(3,5)#2
+%% @r182  bot :- q(2,6), q(4,4)#2
+%% @r183  bot :- q(2,6), q(5,3)#2
+%% @r184  bot :- q(2,6), q(6,2)#2
+%% @r185  bot :- q(3,1), q(4,2)#2
+%% @r186  bot :- q(3,1), q(5,3)#2
+%% @r187  bot :- q(3,1), q(6,4)#2
+%% @r188  bot :- q(3,2), q(4,3)#2
+%% @r189  bot :- q(3,2), q(4,1)#2
+%% @r190  bot :- q(3,2), q(5,4)#2
+%% @r191  bot :- q(3,2), q(6,5)#2
+%% @r192  bot :- q(3,3), q(4,4)#2
+%% @r193  bot :- q(3,3), q(4,2)#2
+%% @r194  bot :- q(3,3), q(5,5)#2
+%% @r195  bot :- q(3,3), q(5,1)#2
+%% @r196  bot :- q(3,3), q(6,6)#2
+%% @r197  bot :- q(3,4), q(4,5)#2
+%% @r198  bot :- q(3,4), q(4,3)#2
+%% @r199  bot :- q(3,4), q(5,6)#2
+%% @r200  bot :- q(3,4), q(5,2)#2
+%% @r201  bot :- q(3,4), q(6,1)#2
+%% @r202  bot :- q(3,5), q(4,6)#2
+%% @r203  bot :- q(3,5), q(4,4)#2
+%% @r204  bot :- q(3,5), q(5,3)#2
+%% @r205  bot :- q(3,5), q(6,2)#2
+%% @r206  bot :- q(3,6), q(4,5)#2
+%% @r207  bot :- q(3,6), q(5,4)#2
+%% @r208  bot :- q(3,6), q(6,3)#2
+%% @r209  bot :- q(4,1), q(5,2)#2
+%% @r210  bot :- q(4,1), q(6,3)#2
+%% @r211  bot :- q(4,2), q(5,3)#2
+%% @r212  bot :- q(4,2), q(5,1)#2
+%% @r213  bot :- q(4,2), q(6,4)#2
+%% @r214  bot :- q(4,3), q(5,4)#2
+%% @r215  bot :- q(4,3), q(5,2)#2
+%% @r216  bot :- q(4,3), q(6,5)#2
+%% @r217  bot :- q(4,3), q(6,1)#2
+%% @r218  bot :- q(4,4), q(5,5)#2
+%% @r219  bot :- q(4,4), q(5,3)#2
+%% @r220  bot :- q(4,4), q(6,6)#2
+%% @r221  bot :- q(4,4), q(6,2)#2
+%% @r222  bot :- q(4,5), q(5,6)#2
+%% @r223  bot :- q(4,5), q(5,4)#2
+%% @r224  bot :- q(4,5), q(6,3)#2
+%% @r225  bot :- q(4,6), q(5,5)#2
+%% @r226  bot :- q(4,6), q(6,4)#2
+%% @r227  bot :- q(5,1), q(6,2)#2
+%% @r228  bot :- q(5,2), q(6,3)#2
+%% @r229  bot :- q(5,2), q(6,1)#2
+%% @r230  bot :- q(5,3), q(6,4)#2
+%% @r231  bot :- q(5,3), q(6,2)#2
+%% @r232  bot :- q(5,4), q(6,5)#2
+%% @r233  bot :- q(5,4), q(6,3)#2
+%% @r234  bot :- q(5,5), q(6,6)#2
+%% @r235  bot :- q(5,5), q(6,4)#2
+%% @r236  bot :- q(5,6), q(6,5)#2
+%% Head of the rules 
+
+fact(bot) <=> fail.
+nrule(X) \ head(X,Y), heads(Y,C) <=> A is C-1 | heads(Y,A).
+heads(X,0) <=> nhead(X).
+
+%% Constraint declaration
+
+:- chr_constraint equal/2, nequal/3, dom/2, equal/3, alldiff/1, leq3/3.
+
+%% Constraint propagation
+
+
+equal(X,Y) \ dom(X,DX), dom(Y,DY) <=> intersection(DX,DY,ND) | dom(X,ND), dom(Y,ND).
+equal(X,Y), dom(X,[DX]), dom(Y,[DY]) <=> DX =\= DY | fail.
+
+
+fact(nequal(X,Y,Z)) <=> nequal(X,Y,Z).
+nequal(X,N,Y), dom(Y,[DY]) \ dom(X,DX) <=> A is DY-N, member(A,DX), delete(A,DX,ND) | dom(X,ND).
+nequal(X,N,Y), dom(X,[DX]) \ dom(Y,DY) <=> A is DX+N, member(A,DY), delete(A,DY,ND) | dom(Y,ND).
+nequal(X,N,Y), dom(X,[DX]), dom(Y,[DY]) <=> A is DX + N, A == DY | fail.
+
+dom(A,[DA]), dom(C,[DC]), bodyC(X,nequal(A,B,C)) ==> Z is DA+B, Z =\= DC | verified_constraint(X,nequal(A,B,C)).
+
+
+fact(dom(X,Y)) <=> dom(X,Y).
+dom(_,[]) <=> fail.
+dom(X,L1), dom(X,L2) <=> intersection(L1,L2,L3), dom(X,L3).
+
+
+fact(equal(X,Y,Z)) <=> equal(X,Y,Z).
+equal(X,N,Y), dom(Y,DY) \ dom(X,DX) <=> member(V,DX), A is V+N, not(member(A,DY)), delete(DX,V,ND) | dom(X,ND).
+equal(X,N,Y), dom(X,DX) \ dom(Y,DY) <=> member(V,DY), A is V-N, not(member(A,DX)), delete(DY,V,ND) | dom(Y,ND).
+equal(X,N,Y), dom(X,[DX]), dom(Y,[DY]) <=> A is DX + N, A =\= DY | fail.
+
+dom(A,[DA]), dom(C,[DC]), bodyC(X,equal(A,B,C)) ==> Z is DA+B, Z == DC | verified_constraint(X,equal(A,B,C)).
+
+
+
+:- chr_constraint verif_alldiff/2.
+
+bodyC(_,alldiff(X)) ==> verif_alldiff(X,X).
+fact(alldiff(X)) <=> alldiff(X).
+alldiff([]) <=> fail.
+alldiff(L) \ alldiff(L) <=> true.
+
+alldiff(L), dom(X,[DX]), dom(Y,[DX]) <=> member(X,L), member(Y,L), X \= Y | fail. %If they have the same domain, then fail.
+alldiff(L), dom(X,[DX]) \ dom(Y,DY) <=> member(X,L), member(Y,L), member(DX,DY), X \= Y | delete(DY,DX,DYY), dom(Y,DYY).
+
+
+dom(X,DX) \ verif_alldiff(L1,L2) <=> member(X,L2), length(DX,L), L=:=1, delete(L2,X,L3) | verif_alldiff(L1,L3).
+
+verif_alldiff(Y,[]), bodyC(X,alldiff(Y)) ==> verified_constraint(X,alldiff(Y)).
+
+leqfiltering1 @ dom(X,DX), fact(leq3(X,Z,Y)) \ dom(Y,DY) <=> min_member(MX,DX), min_member(MY,DY), MY < MX + Z | delete(DY,MY,DYY), dom(Y,DYY).
+leqfiltering2 @ dom(Y,DY), fact(leq3(X,Z,Y)) \ dom(X,DX) <=> max_member(MX,DX), max_member(MY,DY), MY < MX + Z | delete(DX,MX,DXX), dom(X,DXX).
+leqTest @ dom(Y,[DY]), dom(X,[DX]), fact(leq3(X,Z,Y)) <=> DX + Z > DY | fail.
+
+dom(L,DL), dom(N,DN), bodyC(X,leq3(L,M,N)) ==>  DL + M =< DN | verified_constraint(X,leq3(L,M,N)).
+
+%% Transformation 
+
+red_neg @ fact(X) \ bodyN(Y,X), rule(Y,_,_,_) <=> nrule(Y).
+red_fai @ nhead(X) \ bodyP(Y,X), rule(Y,_,_,_) <=> nrule(Y).
+red_pos @ nhead(X) \ bodyN(Y,X), rule(Y,P,N,C) <=> A is N-1 | rule(Y,P,A,C).
+red_suc @ fact(X) \ bodyP(Y,X), rule(Y,P,N,C) <=> A is P-1 | rule(Y,A,N,C).
+
+red_con @ verified_constraint(X,Y) \ bodyC(X,Y), rule(X,P,N,C) <=> A is C-1 | rule(X,P,N,A).
+
+%% Empty body 
+
+head(X,Y), rule(X,0,0,0) <=> fact(Y).
+
+%% Choice
+
+%% The rule is forced to be true.
+%% The negative body cannot be true
+choi_frule(X), bodyN(X,Y), fact(Y) <=> fail.
+choi_frule(X) \ bodyC(X,Y) <=> fact(Y).
+
+%% The rule is forced to be false
+%% If one atom from the negative body is true, then fail.
+nhead(Y) \ choi_nrule(X,Z,C), bodyN(X,Y) <=> A is Z-1 | choi_nrule(X,A,C).
+
+choi_nrule(X,Z,C), verified_constraint(X,_) <=> A is C-1 | choi_nrule(X,Z,A).
+choi_nrule(_,0,0) <=> fail.
+
+rule(X,0,Z,C), choice(X) <=> (choi_frule(X), rule(X,0,0,0) ; choi_nrule(X,Z,C), nrule(X)).
+enumeration @ dom(X,[V|Rest]) <=> length(Rest,Length), Length =\= 0 | dom(X,[V]) ; dom(X,Rest).
+
+%% Launcher 
+
+launcher <=> rule(1,0,5,0), head(1,q(1,1)), bodyN(1,q(1,2)), bodyN(1,q(1,3)), bodyN(1,q(1,4)), bodyN(1,q(1,5)), bodyN(1,q(1,6)), rule(2,0,5,0), head(2,q(1,2)), bodyN(2,q(1,1)), bodyN(2,q(1,3)), bodyN(2,q(1,4)), bodyN(2,q(1,5)), bodyN(2,q(1,6)), rule(3,0,5,0), head(3,q(1,3)), bodyN(3,q(1,1)), bodyN(3,q(1,2)), bodyN(3,q(1,4)), bodyN(3,q(1,5)), bodyN(3,q(1,6)), rule(4,0,5,0), head(4,q(1,4)), bodyN(4,q(1,1)), bodyN(4,q(1,2)), bodyN(4,q(1,3)), bodyN(4,q(1,5)), bodyN(4,q(1,6)), rule(5,0,5,0), head(5,q(1,5)), bodyN(5,q(1,1)), bodyN(5,q(1,2)), bodyN(5,q(1,3)), bodyN(5,q(1,4)), bodyN(5,q(1,6)), rule(6,0,5,0), head(6,q(1,6)), bodyN(6,q(1,1)), bodyN(6,q(1,2)), bodyN(6,q(1,3)), bodyN(6,q(1,4)), bodyN(6,q(1,5)), rule(7,0,5,0), head(7,q(2,1)), bodyN(7,q(2,2)), bodyN(7,q(2,3)), bodyN(7,q(2,4)), bodyN(7,q(2,5)), bodyN(7,q(2,6)), rule(8,0,5,0), head(8,q(2,2)), bodyN(8,q(2,1)), bodyN(8,q(2,3)), bodyN(8,q(2,4)), bodyN(8,q(2,5)), bodyN(8,q(2,6)), rule(9,0,5,0), head(9,q(2,3)), bodyN(9,q(2,1)), bodyN(9,q(2,2)), bodyN(9,q(2,4)), bodyN(9,q(2,5)), bodyN(9,q(2,6)), rule(10,0,5,0), head(10,q(2,4)), bodyN(10,q(2,1)), bodyN(10,q(2,2)), bodyN(10,q(2,3)), bodyN(10,q(2,5)), bodyN(10,q(2,6)), rule(11,0,5,0), head(11,q(2,5)), bodyN(11,q(2,1)), bodyN(11,q(2,2)), bodyN(11,q(2,3)), bodyN(11,q(2,4)), bodyN(11,q(2,6)), rule(12,0,5,0), head(12,q(2,6)), bodyN(12,q(2,1)), bodyN(12,q(2,2)), bodyN(12,q(2,3)), bodyN(12,q(2,4)), bodyN(12,q(2,5)), rule(13,0,5,0), head(13,q(3,1)), bodyN(13,q(3,2)), bodyN(13,q(3,3)), bodyN(13,q(3,4)), bodyN(13,q(3,5)), bodyN(13,q(3,6)), rule(14,0,5,0), head(14,q(3,2)), bodyN(14,q(3,1)), bodyN(14,q(3,3)), bodyN(14,q(3,4)), bodyN(14,q(3,5)), bodyN(14,q(3,6)), rule(15,0,5,0), head(15,q(3,3)), bodyN(15,q(3,1)), bodyN(15,q(3,2)), bodyN(15,q(3,4)), bodyN(15,q(3,5)), bodyN(15,q(3,6)), rule(16,0,5,0), head(16,q(3,4)), bodyN(16,q(3,1)), bodyN(16,q(3,2)), bodyN(16,q(3,3)), bodyN(16,q(3,5)), bodyN(16,q(3,6)), rule(17,0,5,0), head(17,q(3,5)), bodyN(17,q(3,1)), bodyN(17,q(3,2)), bodyN(17,q(3,3)), bodyN(17,q(3,4)), bodyN(17,q(3,6)), rule(18,0,5,0), head(18,q(3,6)), bodyN(18,q(3,1)), bodyN(18,q(3,2)), bodyN(18,q(3,3)), bodyN(18,q(3,4)), bodyN(18,q(3,5)), rule(19,0,5,0), head(19,q(4,1)), bodyN(19,q(4,2)), bodyN(19,q(4,3)), bodyN(19,q(4,4)), bodyN(19,q(4,5)), bodyN(19,q(4,6)), rule(20,0,5,0), head(20,q(4,2)), bodyN(20,q(4,1)), bodyN(20,q(4,3)), bodyN(20,q(4,4)), bodyN(20,q(4,5)), bodyN(20,q(4,6)), rule(21,0,5,0), head(21,q(4,3)), bodyN(21,q(4,1)), bodyN(21,q(4,2)), bodyN(21,q(4,4)), bodyN(21,q(4,5)), bodyN(21,q(4,6)), rule(22,0,5,0), head(22,q(4,4)), bodyN(22,q(4,1)), bodyN(22,q(4,2)), bodyN(22,q(4,3)), bodyN(22,q(4,5)), bodyN(22,q(4,6)), rule(23,0,5,0), head(23,q(4,5)), bodyN(23,q(4,1)), bodyN(23,q(4,2)), bodyN(23,q(4,3)), bodyN(23,q(4,4)), bodyN(23,q(4,6)), rule(24,0,5,0), head(24,q(4,6)), bodyN(24,q(4,1)), bodyN(24,q(4,2)), bodyN(24,q(4,3)), bodyN(24,q(4,4)), bodyN(24,q(4,5)), rule(25,0,5,0), head(25,q(5,1)), bodyN(25,q(5,2)), bodyN(25,q(5,3)), bodyN(25,q(5,4)), bodyN(25,q(5,5)), bodyN(25,q(5,6)), rule(26,0,5,0), head(26,q(5,2)), bodyN(26,q(5,1)), bodyN(26,q(5,3)), bodyN(26,q(5,4)), bodyN(26,q(5,5)), bodyN(26,q(5,6)), rule(27,0,5,0), head(27,q(5,3)), bodyN(27,q(5,1)), bodyN(27,q(5,2)), bodyN(27,q(5,4)), bodyN(27,q(5,5)), bodyN(27,q(5,6)), rule(28,0,5,0), head(28,q(5,4)), bodyN(28,q(5,1)), bodyN(28,q(5,2)), bodyN(28,q(5,3)), bodyN(28,q(5,5)), bodyN(28,q(5,6)), rule(29,0,5,0), head(29,q(5,5)), bodyN(29,q(5,1)), bodyN(29,q(5,2)), bodyN(29,q(5,3)), bodyN(29,q(5,4)), bodyN(29,q(5,6)), rule(30,0,5,0), head(30,q(5,6)), bodyN(30,q(5,1)), bodyN(30,q(5,2)), bodyN(30,q(5,3)), bodyN(30,q(5,4)), bodyN(30,q(5,5)), rule(31,0,5,0), head(31,q(6,1)), bodyN(31,q(6,2)), bodyN(31,q(6,3)), bodyN(31,q(6,4)), bodyN(31,q(6,5)), bodyN(31,q(6,6)), rule(32,0,5,0), head(32,q(6,2)), bodyN(32,q(6,1)), bodyN(32,q(6,3)), bodyN(32,q(6,4)), bodyN(32,q(6,5)), bodyN(32,q(6,6)), rule(33,0,5,0), head(33,q(6,3)), bodyN(33,q(6,1)), bodyN(33,q(6,2)), bodyN(33,q(6,4)), bodyN(33,q(6,5)), bodyN(33,q(6,6)), rule(34,0,5,0), head(34,q(6,4)), bodyN(34,q(6,1)), bodyN(34,q(6,2)), bodyN(34,q(6,3)), bodyN(34,q(6,5)), bodyN(34,q(6,6)), rule(35,0,5,0), head(35,q(6,5)), bodyN(35,q(6,1)), bodyN(35,q(6,2)), bodyN(35,q(6,3)), bodyN(35,q(6,4)), bodyN(35,q(6,6)), rule(36,0,5,0), head(36,q(6,6)), bodyN(36,q(6,1)), bodyN(36,q(6,2)), bodyN(36,q(6,3)), bodyN(36,q(6,4)), bodyN(36,q(6,5)), rule(37,2,0,0), head(37,bot), bodyP(37,q(1,1)), bodyP(37,q(2,1)), rule(38,2,0,0), head(38,bot), bodyP(38,q(1,1)), bodyP(38,q(3,1)), rule(39,2,0,0), head(39,bot), bodyP(39,q(1,1)), bodyP(39,q(4,1)), rule(40,2,0,0), head(40,bot), bodyP(40,q(1,1)), bodyP(40,q(5,1)), rule(41,2,0,0), head(41,bot), bodyP(41,q(1,1)), bodyP(41,q(6,1)), rule(42,2,0,0), head(42,bot), bodyP(42,q(2,1)), bodyP(42,q(3,1)), rule(43,2,0,0), head(43,bot), bodyP(43,q(2,1)), bodyP(43,q(4,1)), rule(44,2,0,0), head(44,bot), bodyP(44,q(2,1)), bodyP(44,q(5,1)), rule(45,2,0,0), head(45,bot), bodyP(45,q(2,1)), bodyP(45,q(6,1)), rule(46,2,0,0), head(46,bot), bodyP(46,q(3,1)), bodyP(46,q(4,1)), rule(47,2,0,0), head(47,bot), bodyP(47,q(3,1)), bodyP(47,q(5,1)), rule(48,2,0,0), head(48,bot), bodyP(48,q(3,1)), bodyP(48,q(6,1)), rule(49,2,0,0), head(49,bot), bodyP(49,q(4,1)), bodyP(49,q(5,1)), rule(50,2,0,0), head(50,bot), bodyP(50,q(4,1)), bodyP(50,q(6,1)), rule(51,2,0,0), head(51,bot), bodyP(51,q(5,1)), bodyP(51,q(6,1)), rule(52,2,0,0), head(52,bot), bodyP(52,q(1,2)), bodyP(52,q(2,2)), rule(53,2,0,0), head(53,bot), bodyP(53,q(1,2)), bodyP(53,q(3,2)), rule(54,2,0,0), head(54,bot), bodyP(54,q(1,2)), bodyP(54,q(4,2)), rule(55,2,0,0), head(55,bot), bodyP(55,q(1,2)), bodyP(55,q(5,2)), rule(56,2,0,0), head(56,bot), bodyP(56,q(1,2)), bodyP(56,q(6,2)), rule(57,2,0,0), head(57,bot), bodyP(57,q(2,2)), bodyP(57,q(3,2)), rule(58,2,0,0), head(58,bot), bodyP(58,q(2,2)), bodyP(58,q(4,2)), rule(59,2,0,0), head(59,bot), bodyP(59,q(2,2)), bodyP(59,q(5,2)), rule(60,2,0,0), head(60,bot), bodyP(60,q(2,2)), bodyP(60,q(6,2)), rule(61,2,0,0), head(61,bot), bodyP(61,q(3,2)), bodyP(61,q(4,2)), rule(62,2,0,0), head(62,bot), bodyP(62,q(3,2)), bodyP(62,q(5,2)), rule(63,2,0,0), head(63,bot), bodyP(63,q(3,2)), bodyP(63,q(6,2)), rule(64,2,0,0), head(64,bot), bodyP(64,q(4,2)), bodyP(64,q(5,2)), rule(65,2,0,0), head(65,bot), bodyP(65,q(4,2)), bodyP(65,q(6,2)), rule(66,2,0,0), head(66,bot), bodyP(66,q(5,2)), bodyP(66,q(6,2)), rule(67,2,0,0), head(67,bot), bodyP(67,q(1,3)), bodyP(67,q(2,3)), rule(68,2,0,0), head(68,bot), bodyP(68,q(1,3)), bodyP(68,q(3,3)), rule(69,2,0,0), head(69,bot), bodyP(69,q(1,3)), bodyP(69,q(4,3)), rule(70,2,0,0), head(70,bot), bodyP(70,q(1,3)), bodyP(70,q(5,3)), rule(71,2,0,0), head(71,bot), bodyP(71,q(1,3)), bodyP(71,q(6,3)), rule(72,2,0,0), head(72,bot), bodyP(72,q(2,3)), bodyP(72,q(3,3)), rule(73,2,0,0), head(73,bot), bodyP(73,q(2,3)), bodyP(73,q(4,3)), rule(74,2,0,0), head(74,bot), bodyP(74,q(2,3)), bodyP(74,q(5,3)), rule(75,2,0,0), head(75,bot), bodyP(75,q(2,3)), bodyP(75,q(6,3)), rule(76,2,0,0), head(76,bot), bodyP(76,q(3,3)), bodyP(76,q(4,3)), rule(77,2,0,0), head(77,bot), bodyP(77,q(3,3)), bodyP(77,q(5,3)), rule(78,2,0,0), head(78,bot), bodyP(78,q(3,3)), bodyP(78,q(6,3)), rule(79,2,0,0), head(79,bot), bodyP(79,q(4,3)), bodyP(79,q(5,3)), rule(80,2,0,0), head(80,bot), bodyP(80,q(4,3)), bodyP(80,q(6,3)), rule(81,2,0,0), head(81,bot), bodyP(81,q(5,3)), bodyP(81,q(6,3)), rule(82,2,0,0), head(82,bot), bodyP(82,q(1,4)), bodyP(82,q(2,4)), rule(83,2,0,0), head(83,bot), bodyP(83,q(1,4)), bodyP(83,q(3,4)), rule(84,2,0,0), head(84,bot), bodyP(84,q(1,4)), bodyP(84,q(4,4)), rule(85,2,0,0), head(85,bot), bodyP(85,q(1,4)), bodyP(85,q(5,4)), rule(86,2,0,0), head(86,bot), bodyP(86,q(1,4)), bodyP(86,q(6,4)), rule(87,2,0,0), head(87,bot), bodyP(87,q(2,4)), bodyP(87,q(3,4)), rule(88,2,0,0), head(88,bot), bodyP(88,q(2,4)), bodyP(88,q(4,4)), rule(89,2,0,0), head(89,bot), bodyP(89,q(2,4)), bodyP(89,q(5,4)), rule(90,2,0,0), head(90,bot), bodyP(90,q(2,4)), bodyP(90,q(6,4)), rule(91,2,0,0), head(91,bot), bodyP(91,q(3,4)), bodyP(91,q(4,4)), rule(92,2,0,0), head(92,bot), bodyP(92,q(3,4)), bodyP(92,q(5,4)), rule(93,2,0,0), head(93,bot), bodyP(93,q(3,4)), bodyP(93,q(6,4)), rule(94,2,0,0), head(94,bot), bodyP(94,q(4,4)), bodyP(94,q(5,4)), rule(95,2,0,0), head(95,bot), bodyP(95,q(4,4)), bodyP(95,q(6,4)), rule(96,2,0,0), head(96,bot), bodyP(96,q(5,4)), bodyP(96,q(6,4)), rule(97,2,0,0), head(97,bot), bodyP(97,q(1,5)), bodyP(97,q(2,5)), rule(98,2,0,0), head(98,bot), bodyP(98,q(1,5)), bodyP(98,q(3,5)), rule(99,2,0,0), head(99,bot), bodyP(99,q(1,5)), bodyP(99,q(4,5)), rule(100,2,0,0), head(100,bot), bodyP(100,q(1,5)), bodyP(100,q(5,5)), rule(101,2,0,0), head(101,bot), bodyP(101,q(1,5)), bodyP(101,q(6,5)), rule(102,2,0,0), head(102,bot), bodyP(102,q(2,5)), bodyP(102,q(3,5)), rule(103,2,0,0), head(103,bot), bodyP(103,q(2,5)), bodyP(103,q(4,5)), rule(104,2,0,0), head(104,bot), bodyP(104,q(2,5)), bodyP(104,q(5,5)), rule(105,2,0,0), head(105,bot), bodyP(105,q(2,5)), bodyP(105,q(6,5)), rule(106,2,0,0), head(106,bot), bodyP(106,q(3,5)), bodyP(106,q(4,5)), rule(107,2,0,0), head(107,bot), bodyP(107,q(3,5)), bodyP(107,q(5,5)), rule(108,2,0,0), head(108,bot), bodyP(108,q(3,5)), bodyP(108,q(6,5)), rule(109,2,0,0), head(109,bot), bodyP(109,q(4,5)), bodyP(109,q(5,5)), rule(110,2,0,0), head(110,bot), bodyP(110,q(4,5)), bodyP(110,q(6,5)), rule(111,2,0,0), head(111,bot), bodyP(111,q(5,5)), bodyP(111,q(6,5)), rule(112,2,0,0), head(112,bot), bodyP(112,q(1,6)), bodyP(112,q(2,6)), rule(113,2,0,0), head(113,bot), bodyP(113,q(1,6)), bodyP(113,q(3,6)), rule(114,2,0,0), head(114,bot), bodyP(114,q(1,6)), bodyP(114,q(4,6)), rule(115,2,0,0), head(115,bot), bodyP(115,q(1,6)), bodyP(115,q(5,6)), rule(116,2,0,0), head(116,bot), bodyP(116,q(1,6)), bodyP(116,q(6,6)), rule(117,2,0,0), head(117,bot), bodyP(117,q(2,6)), bodyP(117,q(3,6)), rule(118,2,0,0), head(118,bot), bodyP(118,q(2,6)), bodyP(118,q(4,6)), rule(119,2,0,0), head(119,bot), bodyP(119,q(2,6)), bodyP(119,q(5,6)), rule(120,2,0,0), head(120,bot), bodyP(120,q(2,6)), bodyP(120,q(6,6)), rule(121,2,0,0), head(121,bot), bodyP(121,q(3,6)), bodyP(121,q(4,6)), rule(122,2,0,0), head(122,bot), bodyP(122,q(3,6)), bodyP(122,q(5,6)), rule(123,2,0,0), head(123,bot), bodyP(123,q(3,6)), bodyP(123,q(6,6)), rule(124,2,0,0), head(124,bot), bodyP(124,q(4,6)), bodyP(124,q(5,6)), rule(125,2,0,0), head(125,bot), bodyP(125,q(4,6)), bodyP(125,q(6,6)), rule(126,2,0,0), head(126,bot), bodyP(126,q(5,6)), bodyP(126,q(6,6)), rule(127,2,0,0), head(127,bot), bodyP(127,q(1,1)), bodyP(127,q(2,2)), rule(128,2,0,0), head(128,bot), bodyP(128,q(1,1)), bodyP(128,q(3,3)), rule(129,2,0,0), head(129,bot), bodyP(129,q(1,1)), bodyP(129,q(4,4)), rule(130,2,0,0), head(130,bot), bodyP(130,q(1,1)), bodyP(130,q(5,5)), rule(131,2,0,0), head(131,bot), bodyP(131,q(1,1)), bodyP(131,q(6,6)), rule(132,2,0,0), head(132,bot), bodyP(132,q(1,2)), bodyP(132,q(2,3)), rule(133,2,0,0), head(133,bot), bodyP(133,q(1,2)), bodyP(133,q(2,1)), rule(134,2,0,0), head(134,bot), bodyP(134,q(1,2)), bodyP(134,q(3,4)), rule(135,2,0,0), head(135,bot), bodyP(135,q(1,2)), bodyP(135,q(4,5)), rule(136,2,0,0), head(136,bot), bodyP(136,q(1,2)), bodyP(136,q(5,6)), rule(137,2,0,0), head(137,bot), bodyP(137,q(1,3)), bodyP(137,q(2,4)), rule(138,2,0,0), head(138,bot), bodyP(138,q(1,3)), bodyP(138,q(2,2)), rule(139,2,0,0), head(139,bot), bodyP(139,q(1,3)), bodyP(139,q(3,5)), rule(140,2,0,0), head(140,bot), bodyP(140,q(1,3)), bodyP(140,q(3,1)), rule(141,2,0,0), head(141,bot), bodyP(141,q(1,3)), bodyP(141,q(4,6)), rule(142,2,0,0), head(142,bot), bodyP(142,q(1,4)), bodyP(142,q(2,5)), rule(143,2,0,0), head(143,bot), bodyP(143,q(1,4)), bodyP(143,q(2,3)), rule(144,2,0,0), head(144,bot), bodyP(144,q(1,4)), bodyP(144,q(3,6)), rule(145,2,0,0), head(145,bot), bodyP(145,q(1,4)), bodyP(145,q(3,2)), rule(146,2,0,0), head(146,bot), bodyP(146,q(1,4)), bodyP(146,q(4,1)), rule(147,2,0,0), head(147,bot), bodyP(147,q(1,5)), bodyP(147,q(2,6)), rule(148,2,0,0), head(148,bot), bodyP(148,q(1,5)), bodyP(148,q(2,4)), rule(149,2,0,0), head(149,bot), bodyP(149,q(1,5)), bodyP(149,q(3,3)), rule(150,2,0,0), head(150,bot), bodyP(150,q(1,5)), bodyP(150,q(4,2)), rule(151,2,0,0), head(151,bot), bodyP(151,q(1,5)), bodyP(151,q(5,1)), rule(152,2,0,0), head(152,bot), bodyP(152,q(1,6)), bodyP(152,q(2,5)), rule(153,2,0,0), head(153,bot), bodyP(153,q(1,6)), bodyP(153,q(3,4)), rule(154,2,0,0), head(154,bot), bodyP(154,q(1,6)), bodyP(154,q(4,3)), rule(155,2,0,0), head(155,bot), bodyP(155,q(1,6)), bodyP(155,q(5,2)), rule(156,2,0,0), head(156,bot), bodyP(156,q(1,6)), bodyP(156,q(6,1)), rule(157,2,0,0), head(157,bot), bodyP(157,q(2,1)), bodyP(157,q(3,2)), rule(158,2,0,0), head(158,bot), bodyP(158,q(2,1)), bodyP(158,q(4,3)), rule(159,2,0,0), head(159,bot), bodyP(159,q(2,1)), bodyP(159,q(5,4)), rule(160,2,0,0), head(160,bot), bodyP(160,q(2,1)), bodyP(160,q(6,5)), rule(161,2,0,0), head(161,bot), bodyP(161,q(2,2)), bodyP(161,q(3,3)), rule(162,2,0,0), head(162,bot), bodyP(162,q(2,2)), bodyP(162,q(3,1)), rule(163,2,0,0), head(163,bot), bodyP(163,q(2,2)), bodyP(163,q(4,4)), rule(164,2,0,0), head(164,bot), bodyP(164,q(2,2)), bodyP(164,q(5,5)), rule(165,2,0,0), head(165,bot), bodyP(165,q(2,2)), bodyP(165,q(6,6)), rule(166,2,0,0), head(166,bot), bodyP(166,q(2,3)), bodyP(166,q(3,4)), rule(167,2,0,0), head(167,bot), bodyP(167,q(2,3)), bodyP(167,q(3,2)), rule(168,2,0,0), head(168,bot), bodyP(168,q(2,3)), bodyP(168,q(4,5)), rule(169,2,0,0), head(169,bot), bodyP(169,q(2,3)), bodyP(169,q(4,1)), rule(170,2,0,0), head(170,bot), bodyP(170,q(2,3)), bodyP(170,q(5,6)), rule(171,2,0,0), head(171,bot), bodyP(171,q(2,4)), bodyP(171,q(3,5)), rule(172,2,0,0), head(172,bot), bodyP(172,q(2,4)), bodyP(172,q(3,3)), rule(173,2,0,0), head(173,bot), bodyP(173,q(2,4)), bodyP(173,q(4,6)), rule(174,2,0,0), head(174,bot), bodyP(174,q(2,4)), bodyP(174,q(4,2)), rule(175,2,0,0), head(175,bot), bodyP(175,q(2,4)), bodyP(175,q(5,1)), rule(176,2,0,0), head(176,bot), bodyP(176,q(2,5)), bodyP(176,q(3,6)), rule(177,2,0,0), head(177,bot), bodyP(177,q(2,5)), bodyP(177,q(3,4)), rule(178,2,0,0), head(178,bot), bodyP(178,q(2,5)), bodyP(178,q(4,3)), rule(179,2,0,0), head(179,bot), bodyP(179,q(2,5)), bodyP(179,q(5,2)), rule(180,2,0,0), head(180,bot), bodyP(180,q(2,5)), bodyP(180,q(6,1)), rule(181,2,0,0), head(181,bot), bodyP(181,q(2,6)), bodyP(181,q(3,5)), rule(182,2,0,0), head(182,bot), bodyP(182,q(2,6)), bodyP(182,q(4,4)), rule(183,2,0,0), head(183,bot), bodyP(183,q(2,6)), bodyP(183,q(5,3)), rule(184,2,0,0), head(184,bot), bodyP(184,q(2,6)), bodyP(184,q(6,2)), rule(185,2,0,0), head(185,bot), bodyP(185,q(3,1)), bodyP(185,q(4,2)), rule(186,2,0,0), head(186,bot), bodyP(186,q(3,1)), bodyP(186,q(5,3)), rule(187,2,0,0), head(187,bot), bodyP(187,q(3,1)), bodyP(187,q(6,4)), rule(188,2,0,0), head(188,bot), bodyP(188,q(3,2)), bodyP(188,q(4,3)), rule(189,2,0,0), head(189,bot), bodyP(189,q(3,2)), bodyP(189,q(4,1)), rule(190,2,0,0), head(190,bot), bodyP(190,q(3,2)), bodyP(190,q(5,4)), rule(191,2,0,0), head(191,bot), bodyP(191,q(3,2)), bodyP(191,q(6,5)), rule(192,2,0,0), head(192,bot), bodyP(192,q(3,3)), bodyP(192,q(4,4)), rule(193,2,0,0), head(193,bot), bodyP(193,q(3,3)), bodyP(193,q(4,2)), rule(194,2,0,0), head(194,bot), bodyP(194,q(3,3)), bodyP(194,q(5,5)), rule(195,2,0,0), head(195,bot), bodyP(195,q(3,3)), bodyP(195,q(5,1)), rule(196,2,0,0), head(196,bot), bodyP(196,q(3,3)), bodyP(196,q(6,6)), rule(197,2,0,0), head(197,bot), bodyP(197,q(3,4)), bodyP(197,q(4,5)), rule(198,2,0,0), head(198,bot), bodyP(198,q(3,4)), bodyP(198,q(4,3)), rule(199,2,0,0), head(199,bot), bodyP(199,q(3,4)), bodyP(199,q(5,6)), rule(200,2,0,0), head(200,bot), bodyP(200,q(3,4)), bodyP(200,q(5,2)), rule(201,2,0,0), head(201,bot), bodyP(201,q(3,4)), bodyP(201,q(6,1)), rule(202,2,0,0), head(202,bot), bodyP(202,q(3,5)), bodyP(202,q(4,6)), rule(203,2,0,0), head(203,bot), bodyP(203,q(3,5)), bodyP(203,q(4,4)), rule(204,2,0,0), head(204,bot), bodyP(204,q(3,5)), bodyP(204,q(5,3)), rule(205,2,0,0), head(205,bot), bodyP(205,q(3,5)), bodyP(205,q(6,2)), rule(206,2,0,0), head(206,bot), bodyP(206,q(3,6)), bodyP(206,q(4,5)), rule(207,2,0,0), head(207,bot), bodyP(207,q(3,6)), bodyP(207,q(5,4)), rule(208,2,0,0), head(208,bot), bodyP(208,q(3,6)), bodyP(208,q(6,3)), rule(209,2,0,0), head(209,bot), bodyP(209,q(4,1)), bodyP(209,q(5,2)), rule(210,2,0,0), head(210,bot), bodyP(210,q(4,1)), bodyP(210,q(6,3)), rule(211,2,0,0), head(211,bot), bodyP(211,q(4,2)), bodyP(211,q(5,3)), rule(212,2,0,0), head(212,bot), bodyP(212,q(4,2)), bodyP(212,q(5,1)), rule(213,2,0,0), head(213,bot), bodyP(213,q(4,2)), bodyP(213,q(6,4)), rule(214,2,0,0), head(214,bot), bodyP(214,q(4,3)), bodyP(214,q(5,4)), rule(215,2,0,0), head(215,bot), bodyP(215,q(4,3)), bodyP(215,q(5,2)), rule(216,2,0,0), head(216,bot), bodyP(216,q(4,3)), bodyP(216,q(6,5)), rule(217,2,0,0), head(217,bot), bodyP(217,q(4,3)), bodyP(217,q(6,1)), rule(218,2,0,0), head(218,bot), bodyP(218,q(4,4)), bodyP(218,q(5,5)), rule(219,2,0,0), head(219,bot), bodyP(219,q(4,4)), bodyP(219,q(5,3)), rule(220,2,0,0), head(220,bot), bodyP(220,q(4,4)), bodyP(220,q(6,6)), rule(221,2,0,0), head(221,bot), bodyP(221,q(4,4)), bodyP(221,q(6,2)), rule(222,2,0,0), head(222,bot), bodyP(222,q(4,5)), bodyP(222,q(5,6)), rule(223,2,0,0), head(223,bot), bodyP(223,q(4,5)), bodyP(223,q(5,4)), rule(224,2,0,0), head(224,bot), bodyP(224,q(4,5)), bodyP(224,q(6,3)), rule(225,2,0,0), head(225,bot), bodyP(225,q(4,6)), bodyP(225,q(5,5)), rule(226,2,0,0), head(226,bot), bodyP(226,q(4,6)), bodyP(226,q(6,4)), rule(227,2,0,0), head(227,bot), bodyP(227,q(5,1)), bodyP(227,q(6,2)), rule(228,2,0,0), head(228,bot), bodyP(228,q(5,2)), bodyP(228,q(6,3)), rule(229,2,0,0), head(229,bot), bodyP(229,q(5,2)), bodyP(229,q(6,1)), rule(230,2,0,0), head(230,bot), bodyP(230,q(5,3)), bodyP(230,q(6,4)), rule(231,2,0,0), head(231,bot), bodyP(231,q(5,3)), bodyP(231,q(6,2)), rule(232,2,0,0), head(232,bot), bodyP(232,q(5,4)), bodyP(232,q(6,5)), rule(233,2,0,0), head(233,bot), bodyP(233,q(5,4)), bodyP(233,q(6,3)), rule(234,2,0,0), head(234,bot), bodyP(234,q(5,5)), bodyP(234,q(6,6)), rule(235,2,0,0), head(235,bot), bodyP(235,q(5,5)), bodyP(235,q(6,4)), rule(236,2,0,0), head(236,bot), bodyP(236,q(5,6)), bodyP(236,q(6,5)), heads(q(1,2),1), heads(q(1,3),1), heads(q(1,4),1), heads(q(1,5),1), heads(q(1,6),1), heads(q(1,1),1), heads(q(2,2),1), heads(q(2,3),1), heads(q(2,4),1), heads(q(2,5),1), heads(q(2,6),1), heads(q(2,1),1), heads(q(3,2),1), heads(q(3,3),1), heads(q(3,4),1), heads(q(3,5),1), heads(q(3,6),1), heads(q(3,1),1), heads(q(4,2),1), heads(q(4,3),1), heads(q(4,4),1), heads(q(4,5),1), heads(q(4,6),1), heads(q(4,1),1), heads(q(5,2),1), heads(q(5,3),1), heads(q(5,4),1), heads(q(5,5),1), heads(q(5,6),1), heads(q(5,1),1), heads(q(6,2),1), heads(q(6,3),1), heads(q(6,4),1), heads(q(6,5),1), heads(q(6,6),1), heads(q(6,1),1), heads(bot,200), choice(1), choice(2), choice(3), choice(4), choice(5), choice(6), choice(7), choice(8), choice(9), choice(10), choice(11), choice(12), choice(13), choice(14), choice(15), choice(16), choice(17), choice(18), choice(19), choice(20), choice(21), choice(22), choice(23), choice(24), choice(25), choice(26), choice(27), choice(28), choice(29), choice(30), choice(31), choice(32), choice(33), choice(34), choice(35), choice(36), cleaner, end.
+%% Cleaner 
+
+fact(X) \ fact(X) <=> true.
+cleaner \ bodyP(_,_) <=> true.
+cleaner \ bodyN(_,_) <=> true.
+cleaner \ head(_,_) <=> true.
+cleaner \ bodyC(_,_) <=> true.
+cleaner \ choice(_) <=> true.
+cleaner \ choi_frule(_) <=> true.
+cleaner \ choi_nrule(_,_,_) <=> true.
+cleaner \ nhead(_) <=> true.
+cleaner \ nrule(_) <=> true.
+cleaner \ rule(_,_,_,_) <=> true.
+cleaner \ heads(_,_) <=> true.
+cleaner <=> true.
+
+end <=> chr_show_store(user), nl.

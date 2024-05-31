@@ -1,0 +1,4 @@
+#dom/2
+fact(dom(X,Y)) <=> dom(X,Y).
+dom(_,[]) <=> fail.
+dom(X,L1), dom(X,L2) <=> intersection(L1,L2,L3), dom(X,L3).

@@ -1,0 +1,26 @@
+%% Creating variables and domains 
+
+#(dom(q1,[1,2,3,4]).
+#(dom(q2,[1,2,3,4]).
+#(dom(q3,[1,2,3,4]).
+#(dom(q4,[1,2,3,4]).
+
+%% Alldifferent
+
+#(alldiff([q1,q2,q3,q4])).
+
+%% Diagonal constraints
+
+#(nequal(q1, 1,q2)).
+#(nequal(q1,-1,q2)).
+#(nequal(q1, 2,q3)).
+#(nequal(q1,-2,q3)).
+#(nequal(q1, 3,q4)).
+#(nequal(q1,-3,q4)).
+#(nequal(q2, 1,q3)).
+#(nequal(q2,-1,q3)).
+#(nequal(q2, 2,q4)).
+#(nequal(q2,-2,q4)).
+#(nequal(q3, 1,q4)).
+#(nequal(q3,-1,q4)).
+
