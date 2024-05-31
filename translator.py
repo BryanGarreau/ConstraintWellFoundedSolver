@@ -41,13 +41,13 @@ def translate(prog,facts,constraintFacts,solveChoicePoint = False, nbSol=0, clea
     
     
     # Header
-    header = ":- use_module(library(chr)).\n:- chr_constraint fact/1, rule/4, nrule/1, nhead/1, head/2, heads/2, bodyP/2, bodyN/2, bodyC/2, launcher/0, end/0, cleaner/0, choice/1, choi_nrule/3, choi_frule/1, verified_constraint/2, bot/0.\n\n"
+    header = ":- use_module(library(chr)).\n:- chr_constraint fact/1, rule/4, nrule/1, nhead/1, head/2, heads/2, bodyP/2, bodyN/2, bodyC/2, launcher/0, end/0, cleaner/0, choice/1, choi_nrule/3, choi_frule/1, verified_constraint/2, unsat_constraint/2, bot/0.\n\n"
     # Program
     exampleProg = "%%Program\n\n"
     # Head of the rules
-    headOfRules = "%% Head of the rules \n\nfact(bot) <=> fail.\nnrule(X) \ head(X,Y), heads(Y,C) <=> A is C-1 | heads(Y,A).\nheads(X,0) <=> nhead(X).\n"
+    headOfRules = "%% Head of the rules \n\nfact(bot) <=> fail.\nnrule(X) \ head(X,Y), heads(Y,C) <=> A is C-1 | heads(Y,A).\nheads(bot,_) <=> true.\nheads(X,0) <=> nhead(X).\nnhead(bot) <=> true.\n"
     # Transformation
-    transformation = "%% Transformation \n\nred_neg @ fact(X) \ bodyN(Y,X), rule(Y,_,_,_) <=> nrule(Y).\nred_fai @ nhead(X) \ bodyP(Y,X), rule(Y,_,_,_) <=> nrule(Y).\nred_pos @ nhead(X) \ bodyN(Y,X), rule(Y,P,N,C) <=> A is N-1 | rule(Y,P,A,C).\nred_suc @ fact(X) \ bodyP(Y,X), rule(Y,P,N,C) <=> A is P-1 | rule(Y,A,N,C).\n\nred_con @ verified_constraint(X,Y) \ bodyC(X,Y), rule(X,P,N,C) <=> A is C-1 | rule(X,P,N,A).\n\n"
+    transformation = "%% Transformation \n\nred_neg @ fact(X) \ bodyN(Y,X), rule(Y,_,_,_) <=> nrule(Y).\nred_fai @ nhead(X) \ bodyP(Y,X), rule(Y,_,_,_) <=> nrule(Y).\nred_pos @ nhead(X) \ bodyN(Y,X), rule(Y,P,N,C) <=> A is N-1 | rule(Y,P,A,C).\nred_suc @ fact(X) \ bodyP(Y,X), rule(Y,P,N,C) <=> A is P-1 | rule(Y,A,N,C).\n\nred_con_success @ verified_constraint(X,Y) \ bodyC(X,Y), rule(X,P,N,C) <=> A is C-1 | rule(X,P,N,A).\nred_con_failure @ unsat_constraint(X,Y) \ bodyC(X,Y), rule(X,_,_,_) <=> nrule(X).\n\n"
     # Constraint propagation
     constraintPropagation = "%% Constraint propagation\n\n"
     # Empty body
@@ -55,7 +55,7 @@ def translate(prog,facts,constraintFacts,solveChoicePoint = False, nbSol=0, clea
     # Choice phase
     #choiceRules ="%% Choice\n\n%% The rule is forced to be true.\n%% The negative body cannot be true\nchoi_frule(X), bodyN(X,Y), fact(Y) <=> fail.\n\n%% The rule is forced to be false\n%% If one atom from the negative body is true, then fail.\nnhead(Y) \ choi_nrule(X,Z), bodyN(X,Y) <=> choi_nrule(X,A), A is Z-1.\nchoi_nrule(_,0) <=> fail.\n\nrule(X,0,Z,_), choice(X) <=> (choi_frule(X), rule(X,0,0,0) ; choi_nrule(X,Z), nrule(X)).\n\n"
     
-    choiceRules ="%% Choice\n\n%% The rule is forced to be true.\n%% The negative body cannot be true\nchoi_frule(X), bodyN(X,Y), fact(Y) <=> fail.\nchoi_frule(X) \ bodyC(X,Y) <=> fact(Y).\n\n%% The rule is forced to be false\n%% If one atom from the negative body is true, then fail.\nnhead(Y) \ choi_nrule(X,Z,C), bodyN(X,Y) <=> A is Z-1 | choi_nrule(X,A,C).\n\nchoi_nrule(X,Z,C), verified_constraint(X,_) <=> A is C-1 | choi_nrule(X,Z,A).\nchoi_nrule(_,0,0) <=> fail.\n\nrule(X,0,Z,C), choice(X) <=> (choi_frule(X), rule(X,0,0,0) ; choi_nrule(X,Z,C), nrule(X)).\nenumeration @ dom(X,[V|Rest]) <=> length(Rest,Length), Length =\= 0 | dom(X,[V]) ; dom(X,Rest).\n\n"
+    choiceRules ="%% Choice\n\n%% The rule is forced to be true.\n%% The negative body cannot be true\nchoi_frule(X), bodyN(X,Y), fact(Y) <=> fail.\nchoi_frule(X) \ bodyC(X,Y) <=> fact(Y).\n\n%% The rule is forced to be false\n%% If one atom from the negative body is true, then fail.\nnhead(Y) \ choi_nrule(X,Z,C), bodyN(X,Y) <=> A is Z-1 | choi_nrule(X,A,C).\n\nchoi_nrule(X,Z,C), verified_constraint(X,_) <=> A is C-1 | choi_nrule(X,Z,A).\nchoi_nrule(_,0,0) <=> fail.\n\n%%rule(X,0,Z,C), choice(X) <=> (choi_frule(X), rule(X,0,0,0) ; choi_nrule(X,Z,C), nrule(X)).\nenumeration @ dom(X,[V|Rest]) <=> length(Rest,Length), Length =\= 0 | dom(X,[V]) ; dom(X,Rest).\n\n"
     
     # Printing solutions and fail
     if nbSol == 0:
@@ -67,7 +67,7 @@ def translate(prog,facts,constraintFacts,solveChoicePoint = False, nbSol=0, clea
         exit(1)
         
     # Cleaner
-    cleaner = "%% Cleaner \n\nfact(X) \ fact(X) <=> true.\ncleaner \ bodyP(_,_) <=> true.\ncleaner \ bodyN(_,_) <=> true.\ncleaner \ head(_,_) <=> true.\ncleaner \ bodyC(_,_) <=> true.\ncleaner \ choice(_) <=> true.\ncleaner \ choi_frule(_) <=> true.\ncleaner \ choi_nrule(_,_,_) <=> true.\ncleaner \ nhead(_) <=> true.\ncleaner \ nrule(_) <=> true.\ncleaner \ rule(_,_,_,_) <=> true.\ncleaner \ heads(_,_) <=> true.\ncleaner <=> true.\n\n"
+    cleaner = "%% Cleaner \n\nfact(X) \ fact(X) <=> true.\ncleaner \ bodyP(_,_) <=> true.\ncleaner \ bodyN(_,_) <=> true.\ncleaner \ head(_,_) <=> true.\ncleaner \ bodyC(_,_) <=> true.\ncleaner \ choice(_) <=> true.\ncleaner \ choi_frule(_) <=> true.\ncleaner \ choi_nrule(_,_,_) <=> true.\n%%cleaner \ nhead(_) <=> true.\ncleaner \ nrule(_) <=> true.\ncleaner \ rule(_,_,_,_) <=> true.\ncleaner \ heads(_,_) <=> true.\ncleaner <=> true.\n\n"
     # Launcher
     launcher = "%% Launcher \n\n"
     emptyLauncher = True
@@ -114,7 +114,8 @@ def translate(prog,facts,constraintFacts,solveChoicePoint = False, nbSol=0, clea
     for i in range(len(prog)-1): 
         numNeg = 0
         numPos = 0
-        numCon = len(prog[-1].constraints)
+        numCon = len(prog[i].constraints)
+        
         for b in prog[i].body:
             if b.sign:
                 numPos = numPos + 1
@@ -141,7 +142,8 @@ def translate(prog,facts,constraintFacts,solveChoicePoint = False, nbSol=0, clea
             pass #empty body
         #adding constraints to the launcher
         if len(prog[i].constraints) > 0:
-            launcher += ", "
+            if len(prog[i].body) < 1:
+                launcher += ", "
             for j in range(len(prog[i].constraints)-1):
                 launcher += "bodyC(" + str(ruleNumber) + "," + prog[i].constraints[j].name + ")" + ', '
             launcher += "bodyC(" + str(ruleNumber) + "," + prog[i].constraints[-1].name + ")" + ', '
@@ -205,10 +207,10 @@ def translate(prog,facts,constraintFacts,solveChoicePoint = False, nbSol=0, clea
                 emptyLauncher = False
                 launcher += "nhead(" + symbols[i].__str__() + ")"
 
-    if solveChoicePoint:
-        for i in range(1,ruleNumber):
-            if not prog[i-1].isIntegrityConstraint():
-                launcher += ", choice(" + str(i) + ")"
+    #if solveChoicePoint:
+        #for i in range(1,ruleNumber):
+            #if not prog[i-1].isIntegrityConstraint():
+                #launcher += ", choice(" + str(i) + ")"
     
     if cleanOutput:
         launcher += ", cleaner"

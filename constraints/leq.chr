@@ -1,0 +1,9 @@
+#leq/3
+
+dom(Y,DY), fact(leq(X,Y,Z)) \ dom(X,DX) <=> integer(Z), max_member(MX,DX), min_member(MY,DY), MX + MY > Z, delete(DX,MX,DXX) | dom(X,DXX).
+dom(X,DX), fact(leq(X,Y,Z)) \ dom(Y,DY) <=> integer(Z), min_member(MX,DX), max_member(MY,DY), MX + MY > Z, delete(DY,MY,DYY) | dom(Y,DYY).
+
+leqTest @ dom(Y,[DY]), dom(X,[DX]), fact(leq(X,Y,Z)) <=> integer(Z), DX + DY > Z | fail.
+
+dom(L,DL), dom(M,DM), bodyC(X,leq(L,M,N)) ==>  DL + DM =< N | verified_constraint(X,leq(L,M,N)).
+dom(L,DL), dom(M,DM), bodyC(X,leq(L,M,N)) ==>  DL + DM > N | unsat_constraint(X,leq(L,M,N)).

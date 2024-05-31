@@ -1,0 +1,4 @@
+dom(_1011078,[2])
+fact(night)
+unsat_constraint(6,greater(_1011078,21))
+verified_constraint(5,greater(7,_1011078))

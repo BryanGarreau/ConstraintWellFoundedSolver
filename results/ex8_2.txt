@@ -1,5 +1,0 @@
-dom(x,[1])
-dom(y,[5])
-fact(a)
-fact(leq3(x,3,y))
-fact(leq3(x,4,y))

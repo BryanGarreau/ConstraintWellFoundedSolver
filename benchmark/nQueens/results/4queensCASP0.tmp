@@ -1,2 +1,0 @@
-nequal(q3,-1,q4);nequal(q3,1,q4);nequal(q2,-2,q4);nequal(q2,2,q4);nequal(q2,-1,q3);nequal(q2,1,q3);nequal(q1,-3,q4);nequal(q1,3,q4);nequal(q1,-2,q3);nequal(q1,2,q3);nequal(q1,-1,q2);nequal(q1,1,q2);dom(q4,[3]);dom(q3,[1]);dom(q2,[4]);dom(q1,[2]);alldiff([q1,q2,q3,q4])
-nequal(q3,-1,q4);nequal(q3,1,q4);nequal(q2,-2,q4);nequal(q2,2,q4);nequal(q2,-1,q3);nequal(q2,1,q3);nequal(q1,-3,q4);nequal(q1,3,q4);nequal(q1,-2,q3);nequal(q1,2,q3);nequal(q1,-1,q2);nequal(q1,1,q2);dom(q4,[2]);dom(q3,[4]);dom(q2,[1]);dom(q1,[3]);alldiff([q1,q2,q3,q4])

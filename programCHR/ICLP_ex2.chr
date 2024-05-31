@@ -1,0 +1,143 @@
+:- use_module(library(chr)).
+:- chr_constraint fact/1, rule/4, nrule/1, nhead/1, head/2, heads/2, bodyP/2, bodyN/2, bodyC/2, launcher/0, end/0, cleaner/0, choice/1, choi_nrule/3, choi_frule/1, verified_constraint/2, unsat_constraint/2, bot/0.
+
+%%Program
+
+%% @r1  b :- not a#1
+%% @r2  g :- a, not d, nequal(x,y)#3
+%% @r3  d :- not g, not e#2
+%% @r4  e :- b, not f, not h#3
+%% @r5  f :- equal(x,5), equal(y,5)#2
+%% Head of the rules 
+
+fact(bot) <=> fail.
+nrule(X) \ head(X,Y), heads(Y,C) <=> A is C-1 | heads(Y,A).
+heads(X,0) <=> nhead(X).
+
+%% Constraint declaration
+
+:- chr_constraint equal/3, equal/2, nequal/3, dom/2, alldiff/1, leq3/3, leq/3, nequal/2.
+
+%% Constraint propagation
+
+
+fact(equal(X,Y,Z)) <=> equal(X,Y,Z).
+equal(X,N,Y), dom(Y,DY) \ dom(X,DX) <=> member(V,DX), A is V+N, not(member(A,DY)), delete(DX,V,ND) | dom(X,ND).
+equal(X,N,Y), dom(X,DX) \ dom(Y,DY) <=> member(V,DY), A is V-N, not(member(A,DX)), delete(DY,V,ND) | dom(Y,ND).
+equal(X,N,Y), dom(X,[DX]), dom(Y,[DY]) <=> A is DX + N, A =\= DY | fail.
+
+dom(A,[DA]), dom(C,[DC]), bodyC(X,equal(A,B,C)) ==> Z is DA+B, Z == DC | verified_constraint(X,equal(A,B,C)).
+
+
+
+
+fact(equal(X,Y)) \ dom(X,DX) <=> integer(Y), member(Y,DX), length(DX,L), L =\= 1 | dom(X,[Y]).
+
+fact(equal(X,Y)) \ dom(X,DX), dom(Y,DY) <=> intersection(DX,DY,ND) | dom(X,ND), dom(Y,ND).
+fact(equal(X,Y)), dom(X,[DX]), dom(Y,[DY]) <=> DX =\= DY | fail.
+fact(equal(X,Y)) \ dom(X,[DX]) <=> integer(Y), Y =\= DX | fail.
+
+dom(X,[DX]), dom(Y,[DY]), bodyC(R,equal(X,Y)) ==>  DX =:= DY | verified_constraint(R,equal(X,Y)).
+
+
+
+fact(nequal(X,Y,Z)) <=> nequal(X,Y,Z).
+nequal(X,N,Y), dom(Y,[DY]) \ dom(X,DX) <=> A is DY-N, member(A,DX), delete(A,DX,ND) | dom(X,ND).
+nequal(X,N,Y), dom(X,[DX]) \ dom(Y,DY) <=> A is DX+N, member(A,DY), delete(A,DY,ND) | dom(Y,ND).
+nequal(X,N,Y), dom(X,[DX]), dom(Y,[DY]) <=> A is DX + N, A == DY | fail.
+
+dom(A,[DA]), dom(C,[DC]), bodyC(X,nequal(A,B,C)) ==> Z is DA+B, Z =\= DC | verified_constraint(X,nequal(A,B,C)).
+
+
+fact(dom(X,Y)) <=> dom(X,Y).
+dom(_,[]) <=> fail.
+dom(X,L1), dom(X,L2) <=> intersection(L1,L2,L3), dom(X,L3).
+
+
+:- chr_constraint verif_alldiff/2.
+
+bodyC(_,alldiff(X)) ==> verif_alldiff(X,X).
+fact(alldiff(X)) <=> alldiff(X).
+alldiff([]) <=> fail.
+alldiff(L) \ alldiff(L) <=> true.
+
+alldiff(L), dom(X,[DX]), dom(Y,[DX]) <=> member(X,L), member(Y,L), X \= Y | fail. %If they have the same domain, then fail.
+alldiff(L), dom(X,[DX]) \ dom(Y,DY) <=> member(X,L), member(Y,L), member(DX,DY), X \= Y | delete(DY,DX,DYY), dom(Y,DYY).
+
+
+dom(X,DX) \ verif_alldiff(L1,L2) <=> member(X,L2), length(DX,L), L=:=1, delete(L2,X,L3) | verif_alldiff(L1,L3).
+
+verif_alldiff(Y,[]), bodyC(X,alldiff(Y)) ==> verified_constraint(X,alldiff(Y)).
+
+leqfiltering1 @ dom(X,DX), fact(leq3(X,Z,Y)) \ dom(Y,DY) <=> min_member(MX,DX), min_member(MY,DY), MY < MX + Z | delete(DY,MY,DYY), dom(Y,DYY).
+leqfiltering2 @ dom(Y,DY), fact(leq3(X,Z,Y)) \ dom(X,DX) <=> max_member(MX,DX), max_member(MY,DY), MY < MX + Z | delete(DX,MX,DXX), dom(X,DXX).
+leqTest @ dom(Y,[DY]), dom(X,[DX]), fact(leq3(X,Z,Y)) <=> DX + Z > DY | fail.
+
+dom(L,DL), dom(N,DN), bodyC(X,leq3(L,M,N)) ==>  DL + M =< DN | verified_constraint(X,leq3(L,M,N)).
+
+
+dom(Y,DY), fact(leq(X,Y,Z)) \ dom(X,DX) <=> max_member(MX,DX), min_member(MY,DY), S is MX + MY, S > Z, delete(DX,MX,DXX) | dom(X,DXX).
+dom(X,DX), fact(leq(X,Y,Z)) \ dom(Y,DY) <=> min_member(MX,DX), max_member(MY,DY), S is MX + MY, S > Z, delete(DY,MY,DYY) | dom(Y,DYY).
+
+leqTest @ dom(Y,[DY]), dom(X,[DX]), fact(leq(X,Y,Z)) <=> DX + DY > Z | fail.
+
+dom(L,DL), dom(M,DM), bodyC(X,leq(L,M,N)) ==>  DL + DM =< N | verified_constraint(X,leq(L,M,N)).
+
+
+fact(nequal(X,Y)), dom(X,[DX]) \ dom(Y,DY) <=> member(DX,DY), delete(DY,DX,DYY) | dom(Y,DYY).
+fact(nequal(X,Y)), dom(Y,[DY]) \ dom(X,DX) <=> member(DY,DX), delete(DX,DY,DXX) | dom(X,DXX).
+fact(nequal(X,Y)), dom(X,[DX]), dom(Y,[DY]) <=> DX =:= DY | fail.
+
+dom(X,[DX]), dom(Y,[DY]), bodyC(R,nequal(X,Y)) ==>  DX =\= DY | verified_constraint(R,nequal(X,Y)).
+dom(X,[DX]), dom(Y,[DY]), bodyC(R,nequal(X,Y)) ==>  DX =:= DY | unsat_constraint(R,nequal(X,Y)).
+
+%% Transformation 
+
+red_neg @ fact(X) \ bodyN(Y,X), rule(Y,_,_,_) <=> nrule(Y).
+red_fai @ nhead(X) \ bodyP(Y,X), rule(Y,_,_,_) <=> nrule(Y).
+red_pos @ nhead(X) \ bodyN(Y,X), rule(Y,P,N,C) <=> A is N-1 | rule(Y,P,A,C).
+red_suc @ fact(X) \ bodyP(Y,X), rule(Y,P,N,C) <=> A is P-1 | rule(Y,A,N,C).
+
+red_con @ verified_constraint(X,Y) \ bodyC(X,Y), rule(X,P,N,C) <=> A is C-1 | rule(X,P,N,A).
+
+%% Empty body 
+
+head(X,Y), rule(X,0,0,0) <=> fact(Y).
+
+%% Choice
+
+%% The rule is forced to be true.
+%% The negative body cannot be true
+choi_frule(X), bodyN(X,Y), fact(Y) <=> fail.
+choi_frule(X) \ bodyC(X,Y) <=> fact(Y).
+
+%% The rule is forced to be false
+%% If one atom from the negative body is true, then fail.
+nhead(Y) \ choi_nrule(X,Z,C), bodyN(X,Y) <=> A is Z-1 | choi_nrule(X,A,C).
+
+choi_nrule(X,Z,C), verified_constraint(X,_) <=> A is C-1 | choi_nrule(X,Z,A).
+choi_nrule(_,0,0) <=> fail.
+
+%%rule(X,0,Z,C), choice(X) <=> (choi_frule(X), rule(X,0,0,0) ; choi_nrule(X,Z,C), nrule(X)).
+enumeration @ dom(X,[V|Rest]) <=> length(Rest,Length), Length =\= 0 | dom(X,[V]) ; dom(X,Rest).
+
+%% Launcher 
+
+launcher <=> fact(a), fact(leq(x,y,3)), fact(dom(x,[1,2,3,4,5])), fact(dom(y,[1,2,3,4,5])), rule(1,0,1,0), head(1,b), bodyN(1,a), rule(2,1,1,1), head(2,g), bodyP(2,a), bodyN(2,d), bodyC(2,nequal(x,y)), rule(3,0,2,0), head(3,d), bodyN(3,g), bodyN(3,e), rule(4,1,2,0), head(4,e), bodyP(4,b), bodyN(4,f), bodyN(4,h), rule(5,0,0,2), head(5,f), bodyC(5,equal(x,5)), bodyC(5,equal(y,5)), heads(b,1), heads(d,1), heads(g,1), heads(e,1), heads(f,1), nhead(h), cleaner, end.
+%% Cleaner 
+
+fact(X) \ fact(X) <=> true.
+cleaner \ bodyP(_,_) <=> true.
+cleaner \ bodyN(_,_) <=> true.
+cleaner \ head(_,_) <=> true.
+cleaner \ bodyC(_,_) <=> true.
+cleaner \ choice(_) <=> true.
+cleaner \ choi_frule(_) <=> true.
+cleaner \ choi_nrule(_,_,_) <=> true.
+%%cleaner \ nhead(_) <=> true.
+cleaner \ nrule(_) <=> true.
+cleaner \ rule(_,_,_,_) <=> true.
+cleaner \ heads(_,_) <=> true.
+cleaner <=> true.
+
+end <=> chr_show_store(user), nl, fail.

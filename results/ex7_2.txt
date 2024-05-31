@@ -1,3 +1,0 @@
-dom(x,[1])
-dom(y,[4])
-fact(leq3(x,2,y))

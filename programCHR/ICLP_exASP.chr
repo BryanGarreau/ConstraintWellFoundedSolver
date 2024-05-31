@@ -3,9 +3,10 @@
 
 %%Program
 
-%% @r1  a :- not b, not c#2
-%% @r2  b :- not a, not c#2
-%% @r3  c :- not a, not b#2
+%% @r1  b :- not a#1
+%% @r2  g :- a, not d#2
+%% @r3  d :- not g, not e#2
+%% @r4  e :- b, not f, not h#3
 %% Head of the rules 
 
 fact(bot) <=> fail.
@@ -109,7 +110,7 @@ enumeration @ dom(X,[V|Rest]) <=> length(Rest,Length), Length =\= 0 | dom(X,[V])
 
 %% Launcher 
 
-launcher <=> rule(1,0,2,0), head(1,a), bodyN(1,b), bodyN(1,c), rule(2,0,2,0), head(2,b), bodyN(2,a), bodyN(2,c), rule(3,0,2,0), head(3,c), bodyN(3,a), bodyN(3,b), heads(b,1), heads(c,1), heads(a,1), cleaner, end.
+launcher <=> fact(a), rule(1,0,1,0), head(1,b), bodyN(1,a), rule(2,1,1,0), head(2,g), bodyP(2,a), bodyN(2,d), rule(3,0,2,0), head(3,d), bodyN(3,g), bodyN(3,e), rule(4,1,2,0), head(4,e), bodyP(4,b), bodyN(4,f), bodyN(4,h), heads(b,1), heads(d,1), heads(g,1), heads(e,1), nhead(f), nhead(h), cleaner, end.
 %% Cleaner 
 
 fact(X) \ fact(X) <=> true.

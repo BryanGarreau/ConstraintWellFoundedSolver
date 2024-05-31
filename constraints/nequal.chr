@@ -1,0 +1,8 @@
+#nequal/2
+
+fact(nequal(X,Y)), dom(X,[DX]) \ dom(Y,DY) <=> member(DX,DY), delete(DY,DX,DYY) | dom(Y,DYY).
+fact(nequal(X,Y)), dom(Y,[DY]) \ dom(X,DX) <=> member(DY,DX), delete(DX,DY,DXX) | dom(X,DXX).
+fact(nequal(X,Y)), dom(X,[DX]), dom(Y,[DY]) <=> DX =:= DY | fail.
+
+dom(X,[DX]), dom(Y,[DY]), bodyC(R,nequal(X,Y)) ==>  DX =\= DY | verified_constraint(R,nequal(X,Y)).
+dom(X,[DX]), dom(Y,[DY]), bodyC(R,nequal(X,Y)) ==>  DX =:= DY | unsat_constraint(R,nequal(X,Y)).

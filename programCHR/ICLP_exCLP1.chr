@@ -3,9 +3,12 @@
 
 %%Program
 
-%% @r1  a :- not b, not c#2
-%% @r2  b :- not a, not c#2
-%% @r3  c :- not a, not b#2
+%% @r1  b :- not a#1
+%% @r2  g :- a, not d, nequal(x,y)#3
+%% @r3  d :- not g, not e#2
+%% @r4  e :- b, not f, not h#3
+%% @r5  f :- equal(x,5), equal(y,5)#2
+%% @r6  bot :- greater(x,y)#1
 %% Head of the rules 
 
 fact(bot) <=> fail.
@@ -109,7 +112,7 @@ enumeration @ dom(X,[V|Rest]) <=> length(Rest,Length), Length =\= 0 | dom(X,[V])
 
 %% Launcher 
 
-launcher <=> rule(1,0,2,0), head(1,a), bodyN(1,b), bodyN(1,c), rule(2,0,2,0), head(2,b), bodyN(2,a), bodyN(2,c), rule(3,0,2,0), head(3,c), bodyN(3,a), bodyN(3,b), heads(b,1), heads(c,1), heads(a,1), cleaner, end.
+launcher <=> fact(a), fact(leq(x,y,3)), fact(dom(x,[1,2,3,4,5])), fact(dom(y,[1,2,3,4,5])), rule(1,0,1,0), head(1,b), bodyN(1,a), rule(2,1,1,1), head(2,g), bodyP(2,a), bodyN(2,d), bodyC(2,nequal(x,y)), rule(3,0,2,0), head(3,d), bodyN(3,g), bodyN(3,e), rule(4,1,2,0), head(4,e), bodyP(4,b), bodyN(4,f), bodyN(4,h), rule(5,0,0,2), head(5,f), bodyC(5,equal(x,5)), bodyC(5,equal(y,5)), rule(6,0,0,1), head(6,bot), bodyC(6,greater(x,y)), heads(b,1), heads(d,1), heads(g,1), heads(e,1), heads(f,1), nhead(h), heads(bot,1), cleaner, end.
 %% Cleaner 
 
 fact(X) \ fact(X) <=> true.

@@ -1,0 +1,18 @@
+#greater/2
+
+dom(X,DX), fact(greater(X,Y)) \ dom(Y,DY) <=> max_member(MX,DX), max_member(MY,DY), MX < MY, delete(DY,MY,DYY) | dom(Y,DYY).
+fact(greater(X,Y)) \ dom(X,DX) <=> length(DX,L), L =\= 1, integer(Y), min_member(MX,DX), DX < Y, delete(DX,MX,DXX) | dom(X,DXX).
+fact(greater(X,Y)) \ dom(Y,DY) <=> length(DY,L), L =\= 1, integer(X), max_member(MY,DY), X < MY, delete(DY,MY,DYY) | dom(Y,DYY).
+
+dom(Y,[DY]), dom(X,[DX]), fact(greater(X,Y)) <=> DX =< DY | fail.
+dom(X,[DX]), fact(greater(X,Y)) <=> integer(Y), DX =< Y | fail.
+dom(Y,[DY]), fact(greater(X,Y)) <=> integer(X), X =< DY | fail.
+
+dom(X,[DX]), dom(Y,[DY]), bodyC(R,greater(X,Y)) ==>  DX > DY | verified_constraint(R,greater(X,Y)).
+dom(X,[DX]), dom(Y,[DY]), bodyC(R,greater(X,Y)) ==>  DX =< DY | unsat_constraint(R,greater(X,Y)).
+
+dom(Y,[DY]), bodyC(R,greater(X,Y)) ==> integer(X), X > DY | verified_constraint(R,greater(X,Y)).
+dom(Y,[DY]), bodyC(R,greater(X,Y)) ==> integer(X), X =< DY | unsat_constraint(R,greater(X,Y)).
+
+dom(X,[DX]), bodyC(R,greater(X,Y)) ==> integer(Y), DX > Y | verified_constraint(R,greater(X,Y)).
+dom(X,[DX]), bodyC(R,greater(X,Y)) ==> integer(Y), DX =< Y | unsat_constraint(R,greater(X,Y)).

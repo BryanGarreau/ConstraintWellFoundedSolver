@@ -1,7 +1,6 @@
 import sys
 from parser import  *
 from structure import *
-from wellFoundedModel import *
 from translator import *
 
 verbose = False
