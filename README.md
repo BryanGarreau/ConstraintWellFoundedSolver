@@ -1,6 +1,6 @@
 # CASP solver
 
-This project is a CASP solver based on a simple translation from CASP to CHR. Our solver gives the Constraint Well-Founded Model as it is defined in our article. This solver is strongly inspired by the translation from ASP to CHR made by Stephan. 
+This project is a CASP solver based on a simple translation from CASP to CHR. Our solver computes the Constraint Well-Founded Model at each step and then makes a choice after that. 
 
 ## Swi-Prolog powered solver
 
