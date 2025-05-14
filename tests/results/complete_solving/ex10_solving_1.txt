@@ -1,0 +1,2 @@
+fact(c)
+fact(d)

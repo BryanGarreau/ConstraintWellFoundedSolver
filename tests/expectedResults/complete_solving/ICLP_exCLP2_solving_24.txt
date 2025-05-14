@@ -1,0 +1,3 @@
+dom(x,[12])
+fact(light)
+fact(switchOff)

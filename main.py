@@ -4,8 +4,10 @@ from structure import *
 from translator import *
 
 verbose = False
-solveChoice = False
+solveChoice = False #Well founded by default and compute the solution if it is true
 nbSol = 0 #default value = all
+showSCC = False
+cleanOutput = True
 
 
 if len(sys.argv) == 2 or len(sys.argv) > 6:
@@ -16,6 +18,7 @@ if len(sys.argv) == 2 or len(sys.argv) > 6:
     print("options :")
     print("\t -v : enable verbose (disabled by default)")
     print("\t -s : enable solving (only well-founded model by default)")
+    print("\t -u : diable the computing of unfounded set and only keeps the trace of the unfounded set (Only used for debugging and testing purposes)")
     print("\t -d : debug option. Disables the clean output of the CHR program")
     print("\t -n : number of solutions desired (0 meaning all solutions)")
     print("\t --help : help.")
@@ -49,6 +52,8 @@ if len(sys.argv) > 1 :
             verbose = True
         elif sys.argv[i] == "-s":
             solveChoice = True
+        elif sys.argv[i] == "-u":
+            showSCC = True
         elif sys.argv[i] == "-d":
             cleanOutput = False #for debug
         elif sys.argv[i] == "-n":
@@ -64,7 +69,6 @@ if verbose:
 
 r, facts, constraints = parse_asp(asp_program,False)#Rules, facts, constraints
 
-
 #program TEST
 #r = []
 #r.append(Rule( Literal(Atom('a')), #positiv
@@ -76,15 +80,13 @@ r, facts, constraints = parse_asp(asp_program,False)#Rules, facts, constraints
 #constraints.append(Constraint('dom(x,[1,2])'))
 #constraints.append(Constraint('dom(y,[4,5])'))
 
-
-
 #r, facts, c = parse_asp(asp_program,verbose)#Rules, facts, constraints
 prog = r #r contains all the rules of the program.
 
 if verbose:
  print("Program parsed.")
 
-resultingProg = translate(prog,facts,constraints,True,nbSol)
+resultingProg = translate(prog,facts,constraints,solveChoice,nbSol,cleanOutput,showSCC)
 fileOutput.write(resultingProg)
 
 fileInput.close()

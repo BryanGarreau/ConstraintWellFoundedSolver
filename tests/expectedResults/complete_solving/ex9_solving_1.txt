@@ -1,0 +1,3 @@
+dom(x,[3])
+dom(y,[2])
+fact(greater(x,y))

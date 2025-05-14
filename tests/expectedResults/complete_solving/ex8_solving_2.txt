@@ -1,0 +1,4 @@
+dom(x,[2])
+dom(y,[2])
+fact(b)
+fact(equal(x,y))

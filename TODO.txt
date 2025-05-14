@@ -1,0 +1,3 @@
+- Implémentation des tests unfounded
+- Vérification des paramètres (solve.sh et main.py)
+- link proprement le fichier scc.pl au reste.

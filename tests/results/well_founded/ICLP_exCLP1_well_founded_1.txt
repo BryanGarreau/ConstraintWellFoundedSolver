@@ -1,0 +1,7 @@
+dom(x,[1,2])
+dom(y,[1,2])
+fact(a)
+fact(leq(x,y,3))
+nhead(b)
+nhead(e)
+nhead(h)

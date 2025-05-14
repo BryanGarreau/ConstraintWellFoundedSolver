@@ -1,6 +1,6 @@
 # CASP solver
 
-This project is a CASP solver based on a simple translation from CASP to CHR. Our solver computes the Constraint Well-Founded Model at each step and then makes a choice after that. 
+This project is a CASP solver based on a simple translation from CASP to CHR. Our solver gives the Constraint Well-Founded Model as it is defined in our article. This solver is strongly inspired by the translation from ASP to CHR made by Stephan. 
 
 ## Swi-Prolog powered solver
 
@@ -42,8 +42,8 @@ Where ASPfileName corespond to the file that you want to translate and CHRfileNa
 
 ### How to use swipl with our CHR files
 
-To solve the chr you can use :
+To solve the chr files from this directory you can use :
 
-``` swipl -l CHRfileName -g launcher -t halt ```
+``` swipl -f ./scc.pl-l CHRfileName -g launcher -t halt ```
 
 

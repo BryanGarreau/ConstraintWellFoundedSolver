@@ -1,0 +1,4 @@
+dom(x,[22])
+fact(night)
+unsat_constraint(5,greater(7,x))
+verified_constraint(6,greater(x,21))

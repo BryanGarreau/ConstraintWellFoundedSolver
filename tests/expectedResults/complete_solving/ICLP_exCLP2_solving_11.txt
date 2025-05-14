@@ -1,0 +1,4 @@
+dom(x,[6])
+fact(light)
+fact(night)
+fact(switchOn)

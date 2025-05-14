@@ -1,6 +1,7 @@
 #greater/2
 
-dom(X,DX), fact(greater(X,Y)) \ dom(Y,DY) <=> max_member(MX,DX), max_member(MY,DY), MX < MY, delete(DY,MY,DYY) | dom(Y,DYY).
+dom(X,DX), fact(greater(X,Y)) \ dom(Y,DY) <=> max_member(MX,DX), max_member(MY,DY), MX =< MY, delete(DY,MY,DYY) | dom(Y,DYY).
+dom(Y,DY), fact(greater(X,Y)) \ dom(X,DX) <=> min_member(MX,DX), min_member(MY,DY), MX =< MY, delete(DX,MX,DXX) | dom(X,DXX).
 fact(greater(X,Y)) \ dom(X,DX) <=> length(DX,L), L =\= 1, integer(Y), min_member(MX,DX), DX < Y, delete(DX,MX,DXX) | dom(X,DXX).
 fact(greater(X,Y)) \ dom(Y,DY) <=> length(DY,L), L =\= 1, integer(X), max_member(MY,DY), X < MY, delete(DY,MY,DYY) | dom(Y,DYY).
 

@@ -1,0 +1,4 @@
+fact(c)
+fact(d)
+nhead(a)
+nhead(b)

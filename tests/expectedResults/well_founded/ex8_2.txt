@@ -1,0 +1,3 @@
+dom(x,[2])
+dom(y,[2])
+fact(equal(x,y))
