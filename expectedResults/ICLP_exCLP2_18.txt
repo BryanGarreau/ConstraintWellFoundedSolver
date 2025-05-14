@@ -1,6 +1,0 @@
-dom(_1019056,[18])
-fact(light)
-nhead(night)
-nhead(sleep)
-unsat_constraint(5,greater(7,_1019056))
-unsat_constraint(6,greater(_1019056,21))

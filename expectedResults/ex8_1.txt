@@ -1,3 +1,0 @@
-dom(x,[1])
-dom(y,[1])
-fact(equal(x,y))

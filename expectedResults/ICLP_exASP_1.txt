@@ -1,5 +1,0 @@
-fact(a)
-nhead(b)
-nhead(e)
-nhead(f)
-nhead(h)
