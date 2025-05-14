@@ -8,7 +8,7 @@ The program is in the first place translated to an equivalent CHR-prolog program
 
 ## Directory description
 
-The directory expectedResults contains all the expected results from the example program in programASP for testing purposes. If the one of the program is modified, the results from earlier experiments should stay the same. 
+The directory `expectedResults` contains all the expected results from the example program in programASP for testing purposes. If the one of the program is modified, the results from earlier experiments should stay the same.
 The directory results contains all the results of the programs obtained by the testing script.
 The directory constraints contains all the CHR rules that are needed to solve constraints. Each file contains the chr rules to declare and solve a special type of constraint. They cannot be used alone, they all need to be put in a program to be used correctly. 
 
@@ -31,6 +31,10 @@ for example, you can solve the program presented in our paper like this:
 and 
 
 ``` ./solve.sh ./programASP/ICLP_exASP.asp ```
+
+If you want only the constraint well-fonded model, you can use the option `-w`
+
+``` ./solve.sh ./programASP/ICLP_exASP.asp -w ```
 
 ### How to use the translator
 
