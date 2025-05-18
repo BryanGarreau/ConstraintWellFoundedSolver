@@ -1,0 +1,4 @@
+nhead(a)
+nhead(b)
+scc_component([b,a])
+unfounded([b,a])

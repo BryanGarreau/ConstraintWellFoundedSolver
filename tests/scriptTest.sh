@@ -159,7 +159,70 @@ if [ -d "$aspProgramDirectory" ]; then
                         hasAnAnswer=false
                         for (( j=1 ; j <= numAnswerSet ; j++ ))
                         do
-                            if cmp -s ./$resultDirWellFoundeds/$file\_well\_founded\_$i.txt ./$testDir/\_well\_founded/$file\_well\_founded\_$j.txt ; then
+                            if cmp -s ./$resultDirWellFounded/$file\_well\_founded\_$i.txt ./$testDir/well\_founded/$file\_well\_founded\_$j.txt ; then
+                                hasAnAnswer=true
+                                break
+                            fi
+                        done
+                        if [ "$hasAnAnswer" = false ]; then
+                            echo -n -e "${RED}${BOLD}FAIL.${NORMAL}${NC}"
+                            isEqual=false
+                            break
+                        fi
+                    fi
+                done
+            fi
+            if [ "$isEqual" = true ]; then
+                echo -n -e "${GREEN}${BOLD}OK.${NORMAL}${NC}"
+            fi
+            echo " time: $solving_time s"
+        else
+            echo "The chr file hasn't been correctly generated..."
+        fi
+    done
+
+#TEST UNFOUNDED
+    echo -e "\nTests for well founded.\n"
+    for file in "${files[@]}"; do
+        echo -n "Treating file $aspProgramDirectory/$file.asp "
+        timeout 30s python3 "${translatorDirectory}/main.py" $aspProgramDirectory/$file.asp ./$chrProgramDirectory/$file\_unfounded.chr -u
+        if [ -f ./$chrProgramDirectory/$file\_unfounded.chr ]; then
+
+            time_before=$(date +%s%N)
+            #timeout 30s swipl -q -f "../scc.pl" -l ./$chrProgramDirectory/$file\_well\_founded.chr -g launcher -t halt | tr '\n' ';' | sed 's/;;//g' | sed 's/./\n/g' > ./$resultDirWellFounded/$file\_well\_founded.tmp
+            timeout 30s swipl -q -f "../scc.pl" -l ./$chrProgramDirectory/$file\_unfounded.chr -g launcher -t halt | awk '{if ($0 == ".") {print answer;answer = "";} else {answer = (answer == "" ? $0 : answer " " $0);}} END {if (answer != "") print answer;}' | tr ' ' ';' > ./$resultDirUnfounded/$file\_unfounded.tmp
+            time_after=$(date +%s%N)
+            elapsed_time=$(echo "scale=3; ($time_after - $time_before) / 1000000000" | bc | tr "." ",")
+            solving_time=$(printf "%0.3f" "0$elapsed_time")
+            exec 3< ./$resultDirUnfounded/$file\_unfounded.tmp # open file in reading only
+            # read line by line (each one is an answer set)
+            numAnswerSet=0
+            while read -r ligne <&3; do
+                numAnswerSet=$(( $numAnswerSet+1 ))
+                echo $ligne > ./$resultDirUnfounded/$file\_unfounded\_$numAnswerSet.tmp
+                cat ./$resultDirUnfounded/$file\_unfounded\_$numAnswerSet.tmp | tr ';' '\n' | sort > ./$resultDirUnfounded/$file\_unfounded\_$numAnswerSet.txt
+                rm ./$resultDirUnfounded/$file\_unfounded\_$numAnswerSet.tmp
+            done
+            exec 3<&- #close the file
+            rm ./$resultDirUnfounded/$file\_unfounded.tmp
+
+            #Compare the expected with the real result
+            isEqual=true
+            if [ $numAnswerSet -eq 0 ]; then
+                isEqual=false
+                echo -n -e "${RED}${BOLD}FAIL.${NORMAL}${NC} No solution for this program."
+            else
+                for (( i=1 ; i <= numAnswerSet ; i++ )); do
+                    if [ ! -f ./$testDir/unfounded/$file\_unfounded\_$numAnswerSet.txt ]; then
+                        echo -n -e "${ORANGE}${BOLD}ON HOLD.${NORMAL}${NC}"
+                        onHold=true
+                        isEqual=false
+                        break
+                    else
+                        hasAnAnswer=false
+                        for (( j=1 ; j <= numAnswerSet ; j++ ))
+                        do
+                            if cmp -s ./$resultDirUnfounded/$file\_unfounded\_$i.txt ./$testDir/unfounded/$file\_unfounded\_$j.txt ; then
                                 hasAnAnswer=true
                                 break
                             fi

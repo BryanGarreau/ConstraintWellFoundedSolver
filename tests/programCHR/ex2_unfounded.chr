@@ -152,11 +152,9 @@ cleaner \ rule(_,_,_,_) <=> true.
 cleaner \ heads(_,_) <=> true.
 cleaner \ verified_constraint(_,_) <=> true.
 cleaner \ unsat_constraint(_,_) <=> true.
-cleaner \ unfounded(_) <=> true.
-cleaner \ scc_component(_) <=> true.
-cleaner \ supported(_) <=> true.
-cleaner \ nb_support_scc(_,_) <=> true.
-cleaner \ external_support(_,_) <=> true.
+%cleaner \ unfounded(_) <=> true.
+%cleaner \ scc_component(_) <=> true.
+%cleaner \ supported(_) <=> true.
 cleaner <=> true.
 
 end <=> chr_show_store(user), write("."), nl, fail.

@@ -70,6 +70,7 @@ dom(X,L1), dom(X,L2) <=> intersection(L1,L2,L3), dom(X,L3).
 fact(equal(X,Y)) \ dom(X,DX) <=> integer(Y), member(Y,DX), length(DX,L), L =\= 1 | dom(X,[Y]).
 
 fact(equal(X,Y)) \ dom(X,DX), dom(Y,DY) <=> DX \= DY, intersection(DX,DY,ND), length(DX,LX), LX =\= 1, length(DY,LY), LY =\= 1 | dom(X,ND), dom(Y,ND).
+fact(equal(X,Y)) \ dom(X,DX), dom(Y,DY) <=> DX \= DY, intersection(DX,DY,[]), length(DX,LX), LX =\= 1, length(DY,LY), LY =\= 1 | fail.
 fact(equal(X,Y)), dom(X,[DX]), dom(Y,[DY]) <=> DX =\= DY | fail.
 fact(equal(X,Y)) \ dom(X,[DX]) <=> integer(Y), Y =\= DX | fail.
 fact(equal(X,Y)) \ dom(Y,[DY]) <=> integer(X), DY =\= X | fail.
@@ -78,10 +79,10 @@ dom(X,[DX]), dom(Y,[DY]), bodyC(R,equal(X,Y)) ==>  DX =:= DY | verified_constrai
 dom(X,[DX]), dom(Y,[DY]), bodyC(R,equal(X,Y)) ==>  DX =\= DY | unsat_constraint(R,equal(X,Y)).
 
 dom(X,[DX]), bodyC(R,equal(X,Y)) ==> integer(Y), DX =:= Y | verified_constraint(R,equal(X,Y)).
-dom(X,[DX]), bodyC(R,equal(X,Y)) ==> integer(Y), DX =\= Y | unsat_constraint(R,equal(X,Y)).
+dom(X,DX), bodyC(R,equal(X,Y)) ==> integer(Y), intersection(DX,[Y],[]) | unsat_constraint(R,equal(X,Y)).
 
 dom(Y,[DY]), bodyC(R,equal(X,Y)) ==> integer(X), DY =:= Y | verified_constraint(R,equal(X,Y)).
-dom(Y,[DY]), bodyC(R,equal(X,Y)) ==> integer(X), DY =\= Y | unsat_constraint(R,equal(X,Y)).
+dom(Y,DY), bodyC(R,equal(X,Y)) ==> integer(X), intersection([X],DY,[]) | unsat_constraint(R,equal(X,Y)).
 
 
 dom(Y,DY), fact(leq(X,Y,Z)) \ dom(X,DX) <=> integer(Z), max_member(MX,DX), min_member(MY,DY), MX + MY > Z, delete(DX,MX,DXX) | dom(X,DXX).

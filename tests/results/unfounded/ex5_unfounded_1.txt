@@ -1,0 +1,6 @@
+fact(p(1))
+fact(q(1))
+scc_component([p(1)])
+scc_component([q(1)])
+supported([p(1)])
+supported([q(1)])

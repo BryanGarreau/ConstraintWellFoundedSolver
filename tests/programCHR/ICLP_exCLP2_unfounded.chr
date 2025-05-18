@@ -4,11 +4,15 @@
 
 %%Program
 
-%% @r1  b :- a#1
-%% @r2  c :- b#1
-%% @r3  c :- not b#1
+%% @r1  switchOn :- not switchOff#1
+%% @r2  switchOff :- not switchOn#1
+%% @r3  light :- switchOn#1
+%% @r4  light :- not night#1
+%% @r5  night :- greater(7,x)#1
+%% @r6  night :- greater(x,21)#1
+%% @r7  sleep :- night, not light#2
 %% Facts of the program : 
-%% a
+%% dom(x,[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24])
 
 %% Head of the rules 
 
@@ -136,7 +140,7 @@ choi_nrule(_,0,0) <=> fail.
 %%rule(X,0,Z,C), choice(X) <=> (choi_frule(X), rule(X,0,0,0) ; choi_nrule(X,Z,C), nrule(X)).
 %%enumeration @ dom(X,[V|Rest]) <=> length(Rest,Length), Length =\= 0 | dom(X,[V]) ; dom(X,Rest).
 
-launcher <=> fact(a), head(1,b), head(2,c), head(3,c), heads(b,1), heads(c,2), bodyP(1,a), bodyP(2,b), init_sccs([a,b,c],[arc(a,b),arc(b,c)]), bodyN(3,b), rule(1,1,0,0), rule(2,1,0,0), rule(3,0,1,0), cleaner, end.
+launcher <=> fact(dom(x,[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24])), head(1,switchOn), head(2,switchOff), head(3,light), head(4,light), head(5,night), head(6,night), head(7,sleep), heads(switchOff,1), heads(switchOn,1), heads(light,2), heads(night,2), heads(sleep,1), bodyP(3,switchOn), bodyP(7,night), init_sccs([switchOff,switchOn,light,night,sleep],[arc(switchOn,light),arc(night,sleep)]), bodyN(1,switchOff), bodyN(2,switchOn), bodyN(4,night), bodyC(5,greater(7,x)), bodyC(6,greater(x,21)), bodyN(7,light), rule(1,0,1,0), rule(2,0,1,0), rule(3,1,0,0), rule(4,0,1,0), rule(5,0,0,1), rule(6,0,0,1), rule(7,1,1,0), cleaner, end.
 %% Cleaner 
 
 fact(X) \ fact(X) <=> true.
@@ -152,11 +156,9 @@ cleaner \ rule(_,_,_,_) <=> true.
 cleaner \ heads(_,_) <=> true.
 cleaner \ verified_constraint(_,_) <=> true.
 cleaner \ unsat_constraint(_,_) <=> true.
-cleaner \ unfounded(_) <=> true.
-cleaner \ scc_component(_) <=> true.
-cleaner \ supported(_) <=> true.
-cleaner \ nb_support_scc(_,_) <=> true.
-cleaner \ external_support(_,_) <=> true.
+%cleaner \ unfounded(_) <=> true.
+%cleaner \ scc_component(_) <=> true.
+%cleaner \ supported(_) <=> true.
 cleaner <=> true.
 
 end <=> chr_show_store(user), write("."), nl, fail.

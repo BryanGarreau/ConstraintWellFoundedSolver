@@ -4,11 +4,17 @@
 
 %%Program
 
-%% @r1  b :- a#1
-%% @r2  c :- b#1
-%% @r3  c :- not b#1
+%% @r1  b :- not a#1
+%% @r2  g :- a, not d, nequal(x,y)#3
+%% @r3  d :- not g, not e#2
+%% @r4  e :- b, not f, not h#3
+%% @r5  f :- equal(x,5), equal(y,5)#2
+%% @r6  bot :- greater(x,y)#1
 %% Facts of the program : 
 %% a
+%% leq(x,y,3)
+%% dom(y,[1,2,3,4,5])
+%% dom(x,[1,2,3,4,5])
 
 %% Head of the rules 
 
@@ -136,7 +142,7 @@ choi_nrule(_,0,0) <=> fail.
 %%rule(X,0,Z,C), choice(X) <=> (choi_frule(X), rule(X,0,0,0) ; choi_nrule(X,Z,C), nrule(X)).
 %%enumeration @ dom(X,[V|Rest]) <=> length(Rest,Length), Length =\= 0 | dom(X,[V]) ; dom(X,Rest).
 
-launcher <=> fact(a), head(1,b), head(2,c), head(3,c), heads(b,1), heads(c,2), bodyP(1,a), bodyP(2,b), init_sccs([a,b,c],[arc(a,b),arc(b,c)]), bodyN(3,b), rule(1,1,0,0), rule(2,1,0,0), rule(3,0,1,0), cleaner, end.
+launcher <=> fact(a), fact(leq(x,y,3)), fact(dom(x,[1,2,3,4,5])), fact(dom(y,[1,2,3,4,5])), head(1,b), head(2,g), head(3,d), head(4,e), head(5,f), head(6,bot), heads(b,1), heads(d,1), heads(g,1), heads(e,1), heads(f,1), nhead(h), heads(bot,1), bodyP(2,a), bodyP(4,b), init_sccs([a,b,d,g,e,f,h,bot],[arc(a,g),arc(b,e)]), bodyN(1,a), bodyN(2,d), bodyC(2,nequal(x,y)), bodyN(3,g), bodyN(3,e), bodyN(4,f), bodyN(4,h), bodyC(5,equal(x,5)), bodyC(5,equal(y,5)), bodyC(6,greater(x,y)), rule(1,0,1,0), rule(2,1,1,1), rule(3,0,2,0), rule(4,1,2,0), rule(5,0,0,2), rule(6,0,0,1), cleaner, end.
 %% Cleaner 
 
 fact(X) \ fact(X) <=> true.
@@ -152,11 +158,9 @@ cleaner \ rule(_,_,_,_) <=> true.
 cleaner \ heads(_,_) <=> true.
 cleaner \ verified_constraint(_,_) <=> true.
 cleaner \ unsat_constraint(_,_) <=> true.
-cleaner \ unfounded(_) <=> true.
-cleaner \ scc_component(_) <=> true.
-cleaner \ supported(_) <=> true.
-cleaner \ nb_support_scc(_,_) <=> true.
-cleaner \ external_support(_,_) <=> true.
+%cleaner \ unfounded(_) <=> true.
+%cleaner \ scc_component(_) <=> true.
+%cleaner \ supported(_) <=> true.
 cleaner <=> true.
 
 end <=> chr_show_store(user), write("."), nl, fail.
